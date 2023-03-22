@@ -6,23 +6,55 @@ public class PlayerMoveScript : MonoBehaviour
 {
     Rigidbody _rbody;
     Transform _transform;
-    float _scale = 8;
+    float _scale = 4;
+    public bool _movement = false;
+
+    AudioSource _playerSource;
+    public AudioClip _footstepSound;
+
+    bool _playStep = false;
+    float _timeSinceFoot = 1;
     // Start is called before the first frame update
     void Start()
     {
         _rbody = GetComponent<Rigidbody>();
         _transform = transform;
+        _playerSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {    
+        //Timing for footsteps
+        _timeSinceFoot = _timeSinceFoot + Time.deltaTime;
+        if (_timeSinceFoot > .70f)
+        {
+            _playStep = true;
+        }
+
+        //Movement
         Vector3 move = new Vector3(_scale * Input.GetAxis("Horizontal"), 0, _scale * Input.GetAxis("Vertical"));
         _transform.position +=  _transform.rotation * (Time.deltaTime * move);
-
-        if(Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
+        _movement = true;
+        if(Input.GetAxis("Horizontal") < .01 && Input.GetAxis("Vertical") < .01)
         {
             _rbody.velocity = Vector3.zero;
+            _movement = false;
+        } 
+        else
+        {
+            //If the player isn't moving play the footstep sound every half second
+            if(_playStep)
+            {
+                PlayFoot();
+                _timeSinceFoot = 0;
+                _playStep = false;
+            }
         }
+    }
+
+    public void PlayFoot()
+    {
+        _playerSource.PlayOneShot(_footstepSound);
     }
 }
