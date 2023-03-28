@@ -7,7 +7,8 @@ public class PlayerMoveScript : MonoBehaviour
     Rigidbody _rbody;
     Transform _transform;
     float _scale = 4;
-    public bool _movement = false;
+    public bool _movement = true;
+    public bool _moving = false;
 
     AudioSource _playerSource;
     public AudioClip _footstepSound;
@@ -20,35 +21,39 @@ public class PlayerMoveScript : MonoBehaviour
         _rbody = GetComponent<Rigidbody>();
         _transform = transform;
         _playerSource = GetComponent<AudioSource>();
+        _movement = true;
     }
 
     // Update is called once per frame
     void Update()
     {    
-        //Timing for footsteps
-        _timeSinceFoot = _timeSinceFoot + Time.deltaTime;
-        if (_timeSinceFoot > .70f)
+        if(_movement)
         {
-            _playStep = true;
-        }
-
-        //Movement
-        Vector3 move = new Vector3(_scale * Input.GetAxis("Horizontal"), 0, _scale * Input.GetAxis("Vertical"));
-        _transform.position +=  _transform.rotation * (Time.deltaTime * move);
-        _movement = true;
-        if(Input.GetAxis("Horizontal") < .01 && Input.GetAxis("Vertical") < .01)
-        {
-            _rbody.velocity = Vector3.zero;
-            _movement = false;
-        } 
-        else
-        {
-            //If the player isn't moving play the footstep sound every half second
-            if(_playStep)
+            //Timing for footsteps
+            _timeSinceFoot = _timeSinceFoot + Time.deltaTime;
+            if (_timeSinceFoot > .70f)
             {
-                PlayFoot();
-                _timeSinceFoot = 0;
-                _playStep = false;
+                _playStep = true;
+            }
+
+            //Movement
+            Vector3 move = new Vector3(_scale * Input.GetAxis("Horizontal"), 0, _scale * Input.GetAxis("Vertical"));
+            _transform.position +=  _transform.rotation * (Time.deltaTime * move);
+            _moving = true;
+            if(Input.GetAxis("Horizontal") < .01 && Input.GetAxis("Vertical") < .01)
+            {
+                _rbody.velocity = Vector3.zero;
+                _moving = false;
+            } 
+            else
+            {
+                //If the player isn't moving play the footstep sound every half second
+                if(_playStep)
+                {
+                    PlayFoot();
+                    _timeSinceFoot = 0;
+                    _playStep = false;
+                }
             }
         }
     }

@@ -9,14 +9,19 @@ public class NoteScript : MonoBehaviour
     public Text _pickUp;
     PlayerLookScript _player;
     bool _inNote = false;
+    MSManagerScript _manager;
+    CameraScript _mainCamera;
+    GameObject _lastNote;
 
     AudioSource _noteSource;
     public AudioClip _noteSound;
     // Start is called before the first frame update
     void Start()
     {
-        _player = _player = FindObjectOfType<PlayerLookScript>();
+        _player = FindObjectOfType<PlayerLookScript>();
+        _manager = FindObjectOfType<MSManagerScript>();
         _noteSource = GetComponent<AudioSource>();
+        _mainCamera = FindObjectOfType<CameraScript>();
         _noteImage.enabled = false;
         _pickUp.enabled = false;
     }
@@ -25,8 +30,9 @@ public class NoteScript : MonoBehaviour
     void Update()
     {
         //If it is a note
-        if(_player._hit.tag == "Note")
+        if(_player._hit.tag == "Note" || _player._hit.tag == "StoryNote")
         {
+            _lastNote = _player._hit;
             //If you push the input key
             if(Input.GetKeyDown(KeyCode.E))
             {
@@ -38,7 +44,12 @@ public class NoteScript : MonoBehaviour
                     PlayNote();
                     _noteImage.enabled = false;
                     _inNote = false;
-
+                    if(_player._hit.tag == "StoryNote") 
+                    {
+                        _manager._storyStart = true;
+                        _noteImage.enabled = false;
+                        Destroy(gameObject);
+                    }
                 }
                 else //If the note is not up yet
                 {
@@ -61,6 +72,12 @@ public class NoteScript : MonoBehaviour
                 _noteImage.enabled = false;
                 _pickUp.enabled = false;
                 _inNote = false;
+                if(_lastNote.tag == "StoryNote") 
+                {
+                    _manager._storyStart = true;
+                    _noteImage.enabled = false;
+                    Destroy(gameObject);
+                }
             }       
         }
         else

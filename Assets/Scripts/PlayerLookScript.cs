@@ -29,7 +29,7 @@ public class PlayerLookScript : MonoBehaviour
         //Look Ray
         var ray = new Ray(_headTransform.position, _headTransform.forward);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 25)) 
+        if (Physics.Raycast(ray, out hit, 15)) 
         {
             _hit = hit.transform.gameObject;
         }
