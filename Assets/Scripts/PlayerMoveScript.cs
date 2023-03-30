@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class PlayerMoveScript : MonoBehaviour
 {
-    Rigidbody _rbody;
+    public Rigidbody _rbody;
     Transform _transform;
     float _scale = 4;
     public bool _movement = true;
     public bool _moving = false;
+    public bool _climbingLadder = false;
+    public LadderScript _ladder;
 
     AudioSource _playerSource;
     public AudioClip _footstepSound;
@@ -22,12 +24,13 @@ public class PlayerMoveScript : MonoBehaviour
         _transform = transform;
         _playerSource = GetComponent<AudioSource>();
         _movement = true;
+        _ladder = FindObjectOfType<LadderScript>();
     }
 
     // Update is called once per frame
     void Update()
     {    
-        if(_movement)
+        if(_movement && !_climbingLadder)
         {
             //Timing for footsteps
             _timeSinceFoot = _timeSinceFoot + Time.deltaTime;
@@ -56,6 +59,22 @@ public class PlayerMoveScript : MonoBehaviour
                 }
             }
         }
+
+        if (_ladder._charIsThere && Input.GetKey(KeyCode.W)){
+           _climbingLadder = true;
+           _rbody.velocity = new Vector3(1, 3, 0);
+            
+        }
+        else if (_ladder._charIsThere && Input.GetKey(KeyCode.S))
+        {
+            _climbingLadder = true;
+            _rbody.velocity = new Vector3(1, -3, 0);
+        }
+        else
+        {
+            _climbingLadder = false;
+        }
+
     }
 
     public void PlayFoot()

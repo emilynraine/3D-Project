@@ -7,6 +7,7 @@ public class NoteScript : MonoBehaviour
 {
     public Image _noteImage;
     public Text _pickUp;
+    public Text _messageText;
     PlayerLookScript _player;
     bool _inNote = false;
     MSManagerScript _manager;
@@ -15,13 +16,16 @@ public class NoteScript : MonoBehaviour
 
     AudioSource _noteSource;
     public AudioClip _noteSound;
+    string _message = "";
     // Start is called before the first frame update
     void Start()
     {
         _player = FindObjectOfType<PlayerLookScript>();
         _manager = FindObjectOfType<MSManagerScript>();
+        _message = _manager._messages[_manager._noteNum];
         _noteSource = GetComponent<AudioSource>();
         _mainCamera = FindObjectOfType<CameraScript>();
+        _messageText.text = "";
         _noteImage.enabled = false;
         _pickUp.enabled = false;
     }
@@ -41,9 +45,11 @@ public class NoteScript : MonoBehaviour
                 //If the note is already up take it down
                 if(_inNote)
                 {
+                    _messageText.text = "";
                     PlayNote();
                     _noteImage.enabled = false;
                     _inNote = false;
+
                     if(_player._hit.tag == "StoryNote") 
                     {
                         _manager._storyStart = true;
@@ -56,19 +62,23 @@ public class NoteScript : MonoBehaviour
                     PlayNote();
                     _noteImage.enabled = true;
                     _inNote = true;
+                    _messageText.text = _message;
                 }
             }
             //If not pushing the input key
             if(!_inNote)
             {
                 _pickUp.enabled = true;
+                _messageText.text = "";
             }
         }
         else if(_inNote) //If not looking and in the note
         {
-            if(Input.GetKeyDown(KeyCode.E))
+            
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 PlayNote();
+                _messageText.text = "";
                 _noteImage.enabled = false;
                 _pickUp.enabled = false;
                 _inNote = false;
@@ -83,6 +93,7 @@ public class NoteScript : MonoBehaviour
         else
         {
             _pickUp.enabled = false;
+            _messageText.text = "";
         }
 
     }

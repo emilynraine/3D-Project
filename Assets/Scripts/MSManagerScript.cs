@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class MSManagerScript : MonoBehaviour
 {
+    public string[] _messages = {"I sense something following me. If you find this, it may already have taken me.\n\nI will try hiding on the fire department roof."};
+    public int _noteNum = 0;
     public GameObject _blackoutSquare;
     public bool _storyStart = false;
     float _timeSinceBlackout = 0;
