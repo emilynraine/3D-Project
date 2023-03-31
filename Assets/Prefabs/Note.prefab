@@ -126,7 +126,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _noteImage: {fileID: 0}
   _pickUp: {fileID: 0}
+  _messageText: {fileID: 0}
+  _messageText2: {fileID: 0}
   _noteSound: {fileID: 8300000, guid: 1ff812ce25a47324cacab8dd1bb39feb, type: 3}
+  _notePrefab: {fileID: 13108704632869980}
 --- !u!82 &13108704632869955
 AudioSource:
   m_ObjectHideFlags: 0
