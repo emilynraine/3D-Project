@@ -12,6 +12,7 @@ public class PlayerMoveScript : MonoBehaviour
     public bool _climbingLadder = false;
     public LadderScript _ladder;
 
+    MSManagerScript _manager;
     AudioSource _playerSource;
     public AudioClip _footstepSound;
 
@@ -25,6 +26,7 @@ public class PlayerMoveScript : MonoBehaviour
         _playerSource = GetComponent<AudioSource>();
         _movement = true;
         _ladder = FindObjectOfType<LadderScript>();
+        _manager = FindObjectOfType<MSManagerScript>();
     }
 
     // Update is called once per frame
@@ -77,8 +79,21 @@ public class PlayerMoveScript : MonoBehaviour
 
     }
 
+    private void OnCollisionEnter(Collision other) {
+        if(other.gameObject.tag == "Monster")
+        {
+            _manager._dead = true;
+            _movement = false;
+        }
+    }
+
     public void PlayFoot()
     {
         _playerSource.PlayOneShot(_footstepSound);
+    }
+
+    public void KnockBack()
+    {
+        _rbody.AddForce(_transform.right * 2000f);
     }
 }

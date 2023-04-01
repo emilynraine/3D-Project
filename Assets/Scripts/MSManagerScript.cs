@@ -18,6 +18,7 @@ public class MSManagerScript : MonoBehaviour
     public GameObject[] _spawnPts;
     public List<NoteScript> _sortedNotes;
     public int _lastPos = 0;
+    public bool _dead = false;
 
     // Start is called before the first frame update
     void Start()
@@ -39,6 +40,7 @@ public class MSManagerScript : MonoBehaviour
         //Blackout and Wake up the player for the story
         if(_storyStart) 
         {
+            _playerMove.KnockBack();
             _playerMove._movement = false;
             _pickUp.enabled = false;
             StartCoroutine(BlackOut(true));
@@ -51,7 +53,11 @@ public class MSManagerScript : MonoBehaviour
             }
         }
 
-
+        if(_dead)
+        {
+            print("DEAD");
+            StartCoroutine(BlackOut(true));
+        }
     }
 
     public IEnumerator BlackOut(bool fadeToBlack, float fadeSpeed = .3f)

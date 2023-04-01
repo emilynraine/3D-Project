@@ -18,7 +18,7 @@ public class CameraScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_player._moving)
+        if(_player._moving && _player._movement)
         {
             //If the player is going up or down
             if(_transform.localPosition.y <= .5f)
