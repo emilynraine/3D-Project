@@ -40,6 +40,11 @@ public class MSManagerScript : MonoBehaviour
         //Blackout and Wake up the player for the story
         if(_storyStart) 
         {
+            _playerMove._xMin = -330f;
+            _playerMove._xMax = -203f;
+            _playerMove._zMin = 0f;
+            _playerMove._zMax = 65f;
+            _playerMove.PlayTense1();
             _playerMove.KnockBack();
             _playerMove._movement = false;
             _pickUp.enabled = false;
@@ -60,7 +65,7 @@ public class MSManagerScript : MonoBehaviour
         }
     }
 
-    public IEnumerator BlackOut(bool fadeToBlack, float fadeSpeed = .3f)
+    public IEnumerator BlackOut(bool fadeToBlack, float fadeSpeed = .4f)
     {
         Color objectColor = _blackoutSquare.GetComponent<Image>().color;
         float fadeAmount;

@@ -12,12 +12,19 @@ public class PlayerMoveScript : MonoBehaviour
     public bool _climbingLadder = false;
     public LadderScript _ladder;
 
+    public float _xMin = -322f;
+    public float _xMax = -302f;
+    public float _zMin = 12f;
+    public float _zMax = 36f;
+
     MSManagerScript _manager;
     AudioSource _playerSource;
     public AudioClip _footstepSound;
+    public AudioClip _tenseSound1;
 
     bool _playStep = false;
     float _timeSinceFoot = 1;
+    float _timeSinceTense1 = 2;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,9 +43,28 @@ public class PlayerMoveScript : MonoBehaviour
         {
             //Timing for footsteps
             _timeSinceFoot = _timeSinceFoot + Time.deltaTime;
-            if (_timeSinceFoot > .70f)
+            _timeSinceTense1 = _timeSinceTense1 + Time.deltaTime;
+            if (_timeSinceFoot > .72f)
             {
                 _playStep = true;
+            }
+
+            //Bound Checking
+            if(_transform.position.x <= _xMin)
+            {
+                _transform.position = new Vector3(_xMin, _transform.position.y, _transform.position.z);
+            }
+            if(_transform.position.x >= _xMax)
+            {
+                _transform.position = new Vector3(_xMax, _transform.position.y, _transform.position.z);
+            }
+            if(_transform.position.z <= _zMin)
+            {
+                _transform.position = new Vector3(_transform.position.x, _transform.position.y, _zMin);
+            }
+            if(_transform.position.z >= _zMax)
+            {
+                _transform.position = new Vector3(_transform.position.x, _transform.position.y, _zMax);
             }
 
             //Movement
@@ -84,6 +110,8 @@ public class PlayerMoveScript : MonoBehaviour
         {
             _manager._dead = true;
             _movement = false;
+            KnockBack();
+            PlayTense1();
         }
     }
 
@@ -92,8 +120,17 @@ public class PlayerMoveScript : MonoBehaviour
         _playerSource.PlayOneShot(_footstepSound);
     }
 
+    public void PlayTense1()
+    {
+        if(_timeSinceTense1 > 2)
+        {
+            _timeSinceTense1 = 0;
+            _playerSource.PlayOneShot(_tenseSound1);
+        }
+    }
+
     public void KnockBack()
     {
-        _rbody.AddForce(_transform.right * 2000f);
+        _rbody.AddForce(_transform.right * 1000f);
     }
 }
