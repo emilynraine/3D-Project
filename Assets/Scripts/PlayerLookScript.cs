@@ -41,7 +41,7 @@ public class PlayerLookScript : MonoBehaviour
             _hit = hit.transform.gameObject;
         }
 
-        if(_hit.gameObject.tag != "Note" && _hit.gameObject.tag != "StoryNote")
+        if(_hit.gameObject.tag != "Note" && _hit.gameObject.tag != "StoryNote" && _hit.gameObject.tag != "Gun")
         {
             _pickupText.enabled = false;
         }
