@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System;
 
 public class MSManagerScript : MonoBehaviour
@@ -62,6 +63,7 @@ public class MSManagerScript : MonoBehaviour
         {
             print("DEAD");
             StartCoroutine(BlackOut(true));
+            Invoke("LoadStart", 4f);
         }
     }
 
@@ -111,6 +113,11 @@ public class MSManagerScript : MonoBehaviour
             print("no more notes, oob");
         }
     }
+
+    public void LoadStart()
+    {
+        SceneManager.LoadScene("TitleScene");
+    }
 }
 
 
@@ -121,3 +128,4 @@ class NoteComparer : IComparer
         return (new CaseInsensitiveComparer()).Compare(((NoteScript)x)._id, ((NoteScript)y)._id);
     }
 }
+
