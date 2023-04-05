@@ -43,7 +43,7 @@ public class MSManagerScript : MonoBehaviour
             _playerMove._xMin = -330f;
             _playerMove._xMax = -203f;
             _playerMove._zMin = 0f;
-            _playerMove._zMax = 65f;
+            _playerMove._zMax = 75f;
             _playerMove.PlayTense1();
             _playerMove.KnockBack();
             _playerMove._movement = false;
