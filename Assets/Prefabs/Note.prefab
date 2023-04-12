@@ -96,7 +96,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!65 &13108704632869953
@@ -128,6 +128,8 @@ MonoBehaviour:
   _pickUp: {fileID: 0}
   _messageText: {fileID: 0}
   _messageText2: {fileID: 0}
+  _id: 0
+  _putDownBefore: 0
   _noteSound: {fileID: 8300000, guid: 1ff812ce25a47324cacab8dd1bb39feb, type: 3}
   _notePrefab: {fileID: 13108704632869980}
 --- !u!82 &13108704632869955
