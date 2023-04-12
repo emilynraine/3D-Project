@@ -63,7 +63,7 @@ public class MSManagerScript : MonoBehaviour
         {
             print("DEAD");
             StartCoroutine(BlackOut(true));
-            Invoke("LoadStart", 4f);
+            Invoke("LoadEnd", 4f);
         }
     }
 
@@ -114,9 +114,9 @@ public class MSManagerScript : MonoBehaviour
         }
     }
 
-    public void LoadStart()
+    public void LoadEnd()
     {
-        SceneManager.LoadScene("TitleScene");
+        SceneManager.LoadScene("EndScene");
     }
 }
 
