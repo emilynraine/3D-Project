@@ -8,6 +8,10 @@ TagManager:
   - Monster
   - StoryNote
   - Gun
+  - left
+  - right
+  - forward
+  - backward
   layers:
   - Default
   - TransparentFX

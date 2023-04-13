@@ -46,5 +46,6 @@ public class PlayerLookScript : MonoBehaviour
             _pickupText.enabled = false;
         }
 
+
     }
 }
