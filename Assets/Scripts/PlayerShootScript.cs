@@ -10,9 +10,12 @@ public class PlayerShootScript : MonoBehaviour
     GameObject _hit;
     public MonsterScript _monster;
     public bool _hitCRPlaying = false;
+    AudioSource _playerSource;
+    public AudioClip _shootSound;
     // Start is called before the first frame update
     void Start()
     {
+        _playerSource = GetComponent<AudioSource>();
         _animator = GetComponent<Animator>();
         _gun.SetActive(false);
         _monster = FindObjectOfType<MonsterScript>();
@@ -21,8 +24,10 @@ public class PlayerShootScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && _gun.activeSelf)
         {
+            StartCoroutine(GunAnimation());
+            _playerSource.PlayOneShot(_shootSound);
             print("clicked mouse");
             var _shootRay = new Ray(_gunTransform.position, -_gunTransform.forward);
 
@@ -43,6 +48,24 @@ public class PlayerShootScript : MonoBehaviour
         }
     }
 
+    public IEnumerator GunAnimation()
+    {
+        float i = .002f;
+        print(_gunTransform.localPosition.z);
+        while(_gunTransform.localPosition.z > .090f)
+        {
+            _gunTransform.localPosition = new Vector3(_gunTransform.localPosition.x, _gunTransform.localPosition.y, 
+            _gunTransform.localPosition.z - i);
+            yield return null;
+        }
+
+        while(_gunTransform.localPosition.z < .104f)
+        {
+            _gunTransform.localPosition = new Vector3(_gunTransform.localPosition.x, _gunTransform.localPosition.y, 
+            _gunTransform.localPosition.z + i);
+            yield return null;
+        }
+    }
 
     /*IEnumerator HitAnim()
     {
