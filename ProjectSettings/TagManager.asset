@@ -12,6 +12,7 @@ TagManager:
   - right
   - forward
   - backward
+  - Waypoint
   layers:
   - Default
   - TransparentFX

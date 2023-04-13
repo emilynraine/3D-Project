@@ -42,6 +42,8 @@ public class PlayerShootScript : MonoBehaviour
             if (_hit != null && _hit.gameObject.tag == "Monster" && (!_hitCRPlaying))
             {
                 print("hit monster");
+                _monster._gotShot = true;
+                _monster._fleeing = true;
                 StartCoroutine(_monster.HitAnim());
 
             }
@@ -51,7 +53,6 @@ public class PlayerShootScript : MonoBehaviour
     public IEnumerator GunAnimation()
     {
         float i = .002f;
-        print(_gunTransform.localPosition.z);
         while(_gunTransform.localPosition.z > .090f)
         {
             _gunTransform.localPosition = new Vector3(_gunTransform.localPosition.x, _gunTransform.localPosition.y, 
