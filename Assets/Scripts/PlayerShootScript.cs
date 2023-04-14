@@ -47,7 +47,9 @@ public class PlayerShootScript : MonoBehaviour
                 StartCoroutine(_monster.HitAnim());
 
             }
+            _gun.SetActive(false);
         }
+
     }
 
     public IEnumerator GunAnimation()

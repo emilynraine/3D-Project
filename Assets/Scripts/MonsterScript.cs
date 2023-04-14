@@ -41,7 +41,8 @@ public class MonsterScript : MonoBehaviour
     void Update()
     {
         _animator.SetBool("Idle", _rbody.velocity.x == 0.0f && _rbody.velocity.z == 0.0f && !_player._hitCRPlaying);
-
+        _animator.SetBool("Forward", (_rbody.velocity.x > 0.0f || _rbody.velocity.z > 0.0f) && !_player._hitCRPlaying);
+        
         if(_manager._storyStart)
         {
             _monsterActive = true;
