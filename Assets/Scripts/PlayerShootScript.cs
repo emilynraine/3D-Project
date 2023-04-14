@@ -45,6 +45,7 @@ public class PlayerShootScript : MonoBehaviour
                 _monster._gotShot = true;
                 _monster._fleeing = true;
                 StartCoroutine(_monster.HitAnim());
+                StartCoroutine(_monster.PlayScreech());
 
             }
             _gun.SetActive(false);

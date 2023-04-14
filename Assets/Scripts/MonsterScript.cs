@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class MonsterScript : MonoBehaviour
 {
+    AudioSource _audioSource;
     public Animator _animator;
     Rigidbody _rbody;
     public GameObject _playerObject;
@@ -26,6 +27,7 @@ public class MonsterScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _audioSource = GetComponent<AudioSource>();
         _transform = transform;
         _animator = GetComponent<Animator>();
         _rbody = GetComponent<Rigidbody>();
@@ -55,7 +57,7 @@ public class MonsterScript : MonoBehaviour
             {
                 print("Monster Fleeing");
                 if(_gotShot)
-                {       
+                {   
                     _gotShot = false;
                     _directionToPlayer = _transform.position - _playerObject.transform.position;
                     _fleePosition = _transform.position + _directionToPlayer;
@@ -125,6 +127,11 @@ public class MonsterScript : MonoBehaviour
 
     // }
 
+    public IEnumerator PlayScreech()
+    {
+        _audioSource.Play();
+        yield return new WaitForSeconds(_audioSource.clip.length);
+    }
    public IEnumerator HitAnim()
     {
         _player._hitCRPlaying = true;
