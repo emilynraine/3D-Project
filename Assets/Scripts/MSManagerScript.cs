@@ -13,13 +13,21 @@ public class MSManagerScript : MonoBehaviour
     public bool _storyStart = false;
     float _timeSinceBlackout = 0;
     public Text _pickUp;
+    
     public CameraScript _mainCamera;
     public PlayerMoveScript _playerMove;
+
+    public List<NoteScript> _sortedNotes;
     public NoteScript[] _notes;
     public GameObject[] _spawnPts;
-    public List<NoteScript> _sortedNotes;
+
     public int _lastPos = 0;
     public bool _dead = false;
+
+    [SerializeField]
+    private AudioClip _roarClip;
+    [SerializeField]
+    private AudioClip _loopClip;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +35,9 @@ public class MSManagerScript : MonoBehaviour
         _playerMove = FindObjectOfType<PlayerMoveScript>();
         _mainCamera = FindObjectOfType<CameraScript>();
         _notes = FindObjectsOfType<NoteScript>(true);
+        
+        StartCoroutine(PlaySounds(_roarClip, _loopClip));
+        
         Array.Sort(_notes, new NoteComparer());
     }
 
@@ -118,8 +129,43 @@ public class MSManagerScript : MonoBehaviour
     {
         SceneManager.LoadScene("EndScene");
     }
+
+    IEnumerator PlaySounds(AudioClip _clip1, AudioClip _clip2)
+    {
+        AudioSource _audioSource = GetComponent<AudioSource>();
+        _audioSource.clip = _clip1;
+        _audioSource.Play();
+        StartCoroutine(FadeAudioSource.StartFade(_audioSource, _audioSource.clip.length, 0.0f));
+        yield return new WaitForSeconds(_audioSource.clip.length);
+        _audioSource.volume = 1.0f;
+
+        _audioSource.clip = _clip2;
+        _audioSource.loop = true;
+        _audioSource.Play();
+        yield return new WaitForSeconds(_audioSource.clip.length);
+    }
+
+
 }
 
+
+//taken from https://johnleonardfrench.com/how-to-fade-audio-in-unity-i-tested-every-method-this-ones-the-best/#:~:text=There's%20no%20separate%20function%20for,script%20will%20do%20the%20rest.
+
+public static class FadeAudioSource
+{
+    public static IEnumerator StartFade(AudioSource audioSource, float duration, float targetVolume)
+    {
+        float currentTime = 0;
+        float start = audioSource.volume;
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
+            yield return null;
+        }
+        yield break;
+    }
+}
 
 class NoteComparer : IComparer
 {
