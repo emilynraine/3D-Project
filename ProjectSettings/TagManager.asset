@@ -13,6 +13,7 @@ TagManager:
   - forward
   - backward
   - Waypoint
+  - Car
   layers:
   - Default
   - TransparentFX

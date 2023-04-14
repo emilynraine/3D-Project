@@ -22,6 +22,7 @@ public class GunScript : MonoBehaviour
             _player._pickupText.enabled = true;
             if(Input.GetKeyDown(KeyCode.E))
             {
+                _shooter._playPickup = true;
                 _shooter._gun.SetActive(true);
                 gameObject.SetActive(false);
             }

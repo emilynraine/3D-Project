@@ -12,6 +12,8 @@ public class PlayerShootScript : MonoBehaviour
     public bool _hitCRPlaying = false;
     AudioSource _playerSource;
     public AudioClip _shootSound;
+    public AudioClip _gunPickUp;
+    public bool _playPickup = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +26,11 @@ public class PlayerShootScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(_playPickup)
+        {
+            _playPickup = false;
+            _playerSource.PlayOneShot(_gunPickUp);
+        }
         if (Input.GetMouseButtonDown(0) && _gun.activeSelf)
         {
             StartCoroutine(GunAnimation());
