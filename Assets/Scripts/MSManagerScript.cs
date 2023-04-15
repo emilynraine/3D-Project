@@ -7,7 +7,8 @@ using System;
 
 public class MSManagerScript : MonoBehaviour
 {
-    public string[] _messages = {"I sense something following me. If you find this, it may already have taken me.\nWill grab gun and take cover on fire dept. roof.", "Seems safe for the time being. Will stay here with gun...\nwait, I just heard something. I'm afraid th", "I am Note 2, the first randomly spawned note", "I am Note 3, the second randomly spawned note", "I am Note 4, the third randomly spawned note"};
+    public string[] _messages = {"I sense something following me. If you find this, it may already have taken me.\nWill grab gun and take cover on fire dept. roof.", "Seems safe for the time being. Will stay here with gun...\nwait, I just heard something. I'm afraid th", 
+        "1/3\nThere's a reason this city is so empty.", "2/3 \nAlways just out of sight.", "3/3 \nWhat a shame, you would have made an excellent meal..."};
     public int _noteNum = 0;
     public GameObject _blackoutSquare;
     public bool _storyStart = false;
@@ -123,12 +124,20 @@ public class MSManagerScript : MonoBehaviour
         {
             print("no more notes, oob");
             //Win state goes here?
+            print("player has won");
+            Invoke("LoadWin", 2f);
+
         }
     }
 
     public void LoadEnd()
     {
         SceneManager.LoadScene("EndScene");
+    }
+
+    public void LoadWin()
+    {
+        SceneManager.LoadScene("WinScene");
     }
 
     IEnumerator PlaySounds(AudioClip _clip1, AudioClip _clip2)

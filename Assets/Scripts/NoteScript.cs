@@ -59,14 +59,23 @@ public class NoteScript : MonoBehaviour
         _noteImage.enabled = false;
         _pickUp.enabled = false;
         print("my id is: " + _id);
-        _messageString = _manager._messages[_id];
+        //_messageString = _manager._messages[_id];
 
         print("my message is: " + _messageString);
+        
 
-
-        if (_id == 1)
+        if(_id == 0)
         {
+            _messageString = _manager._messages[_id];
+        }
+        else if (_id == 1)
+        {
+            _messageString = _manager._messages[_id];
             _messageString2 = "Yes, be afraid. The notes are mine now. Find them all before I find you.";
+        }
+        else
+        {
+            _messageString2 = _manager._messages[_id];
         }
     }
 
