@@ -12,6 +12,8 @@ public class PlayerLookScript : MonoBehaviour
     public LayerMask _layer;
     PlayerMoveScript _player;
     public Text _pickupText;
+    public Camera _mainCamera;
+    public GameObject _emptyHitObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,11 +36,15 @@ public class PlayerLookScript : MonoBehaviour
         }
 
         //Look Ray
-        var ray = new Ray(_headTransform.position, _headTransform.forward);
+        var ray = _mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 15)) 
+        if (Physics.Raycast(ray, out hit, 4)) 
         {
             _hit = hit.transform.gameObject;
+        } else
+        {
+            _hit = _emptyHitObject;
+            print("emptyHit");
         }
 
         if(_hit.gameObject.tag != "Note" && _hit.gameObject.tag != "StoryNote" && _hit.gameObject.tag != "Gun" && _hit.gameObject.tag != "Car")

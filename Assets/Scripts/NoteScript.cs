@@ -85,6 +85,7 @@ public class NoteScript : MonoBehaviour
         //If it is a note
         if(_player._hit.tag == "Note" || _player._hit.tag == "StoryNote")
         {
+            _pickUp.enabled = true;
             _lastNote = _player._hit;
             //If you push the input key
             if(Input.GetKeyDown(KeyCode.E))
@@ -97,7 +98,6 @@ public class NoteScript : MonoBehaviour
                     _messageText.text = "";
                     _messageText2.text = "";
                     PlayNote();
-                    _noteImage.enabled = false;
                     _inNote = false;
                     
 
@@ -129,7 +129,6 @@ public class NoteScript : MonoBehaviour
             //If not pushing the input key
             if(!_inNote)
             {
-                _pickUp.enabled = true;
                 _messageText.text = "";
                 _messageText2.text = "";
             }
@@ -143,7 +142,6 @@ public class NoteScript : MonoBehaviour
                 _messageText.text = "";
                 _messageText2.text = "";
                 _noteImage.enabled = false;
-                _pickUp.enabled = false;
                 _inNote = false;
                 if (!_putDownBefore && _id < _manager._notes.Length)
                 {
@@ -158,7 +156,6 @@ public class NoteScript : MonoBehaviour
         }
         else
         {
-            _pickUp.enabled = false;
             _messageText.text = "";
             _messageText2.text = "";
         }

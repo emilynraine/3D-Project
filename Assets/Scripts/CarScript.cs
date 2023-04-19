@@ -17,7 +17,7 @@ public class CarScript : MonoBehaviour
     {
         if(_player._hit.tag == "Car")
         {
-            _player._pickupText.text = "Car is locked...";
+            _player._pickupText.text = "The car is locked...";
             _player._pickupText.enabled = true;
         }
         else

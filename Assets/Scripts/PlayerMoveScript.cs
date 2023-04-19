@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMoveScript : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PlayerMoveScript : MonoBehaviour
     AudioSource _playerSource;
     public AudioClip _footstepSound;
     public AudioClip _tenseSound1;
+    public Text _boundsText;
 
     bool _playStep = false;
     float _timeSinceFoot = 1;
@@ -49,29 +51,34 @@ public class PlayerMoveScript : MonoBehaviour
                 _playStep = true;
             }
 
+            _boundsText.enabled = false;
             //Bound Checking
             if(_transform.position.x <= _xMin)
             {
                 _transform.position = new Vector3(_xMin, _transform.position.y, _transform.position.z);
+                _boundsText.enabled = true;
             }
             if(_transform.position.x >= _xMax)
             {
                 _transform.position = new Vector3(_xMax, _transform.position.y, _transform.position.z);
+                _boundsText.enabled = true;
             }
             if(_transform.position.z <= _zMin)
             {
                 _transform.position = new Vector3(_transform.position.x, _transform.position.y, _zMin);
+                _boundsText.enabled = true;
             }
             if(_transform.position.z >= _zMax)
             {
                 _transform.position = new Vector3(_transform.position.x, _transform.position.y, _zMax);
+                _boundsText.enabled = true;
             }
 
             //Movement
             Vector3 move = new Vector3(_scale * Input.GetAxis("Horizontal"), 0, _scale * Input.GetAxis("Vertical"));
             _transform.position +=  _transform.rotation * (Time.deltaTime * move);
             _moving = true;
-            if(Input.GetAxis("Horizontal") < .01 && Input.GetAxis("Vertical") < .01)
+            if(Input.GetAxis("Horizontal") < .1f && Input.GetAxis("Vertical") < .1f)
             {
                 _rbody.velocity = Vector3.zero;
                 _moving = false;

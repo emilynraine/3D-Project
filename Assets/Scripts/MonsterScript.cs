@@ -55,7 +55,6 @@ public class MonsterScript : MonoBehaviour
         {
             if(_gotShot || _fleeing) //Make him flee from the player to another location
             {
-                print("Monster Fleeing");
                 if(_gotShot)
                 {   
                     _gotShot = false;
@@ -72,12 +71,10 @@ public class MonsterScript : MonoBehaviour
             }
             else if(_followingPlayer) //Follow the player's position directly
             {
-                print("Monster Following");
                 _agent.SetDestination(_playerObject.transform.position);
             }
             else //Make him move randomly around the map
             {
-                print("Monster Random Movement");
                 _agent.SetDestination(_waypoints[_currentMovePoint].transform.position);
                 float dtp = Vector3.Distance(_transform.position, _waypoints[_currentMovePoint].transform.position);
                 if(dtp < .5f)

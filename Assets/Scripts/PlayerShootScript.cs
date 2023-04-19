@@ -7,13 +7,16 @@ public class PlayerShootScript : MonoBehaviour
     public Animator _animator;
     public GameObject _gun;
     public Transform _gunTransform;
-    GameObject _hit;
+    public GameObject _hit;
     public MonsterScript _monster;
     public bool _hitCRPlaying = false;
     AudioSource _playerSource;
     public AudioClip _shootSound;
     public AudioClip _gunPickUp;
     public bool _playPickup = false;
+    public Camera _mainCamera;
+    public PlayerLookScript _playerLook;
+    public GameObject _emptyHitObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +24,7 @@ public class PlayerShootScript : MonoBehaviour
         _animator = GetComponent<Animator>();
         _gun.SetActive(false);
         _monster = FindObjectOfType<MonsterScript>();
+        _playerLook = FindObjectOfType<PlayerLookScript>();
     }
 
     // Update is called once per frame
@@ -36,17 +40,19 @@ public class PlayerShootScript : MonoBehaviour
             StartCoroutine(GunAnimation());
             _playerSource.PlayOneShot(_shootSound);
             print("clicked mouse");
-            var _shootRay = new Ray(_gunTransform.position, -_gunTransform.forward);
 
+            var ray = _mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
             RaycastHit hit;
-            if (Physics.Raycast(_shootRay, out hit, 25))
+            if (Physics.Raycast(ray, out hit, 8)) 
             {
                 _hit = hit.transform.gameObject;
-                print("hit an object");
-                print(_hit.gameObject.tag);
+            }
+            else
+            {
+                _hit = _emptyHitObject;
             }
 
-            if (_hit != null && _hit.gameObject.tag == "Monster" && (!_hitCRPlaying))
+            if(_hit.gameObject.tag == "Monster")
             {
                 print("hit monster");
                 _monster._gotShot = true;
@@ -55,7 +61,7 @@ public class PlayerShootScript : MonoBehaviour
                 StartCoroutine(_monster.PlayScreech());
 
             }
-            _gun.SetActive(false);
+            //_gun.SetActive(false);
         }
 
     }
