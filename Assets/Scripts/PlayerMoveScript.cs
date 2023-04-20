@@ -80,7 +80,7 @@ public class PlayerMoveScript : MonoBehaviour
             _moving = true;
             if(Input.GetAxis("Horizontal") < .1f && Input.GetAxis("Vertical") < .1f)
             {
-                _rbody.velocity = Vector3.zero;
+                _rbody.velocity = new Vector3(0, _rbody.velocity.y, 0);;
                 _moving = false;
             } 
             else
@@ -138,6 +138,6 @@ public class PlayerMoveScript : MonoBehaviour
 
     public void KnockBack()
     {
-        _rbody.AddForce(_transform.right * 1000f);
+        _rbody.AddForce(_transform.right * 100000f);
     }
 }
