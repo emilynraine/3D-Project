@@ -61,6 +61,7 @@ public class MonsterScript : MonoBehaviour
                     _directionToPlayer = _transform.position - _playerObject.transform.position;
                     _fleePosition = _transform.position + _directionToPlayer;
                     _agent.SetDestination(_fleePosition);
+                    print("Fleeing to: " + _agent.destination);
                 }
 
                 float distance = Vector3.Distance(_transform.position, _fleePosition);
@@ -72,16 +73,26 @@ public class MonsterScript : MonoBehaviour
             else if(_followingPlayer) //Follow the player's position directly
             {
                 _agent.SetDestination(_playerObject.transform.position);
+                print("Following Player to: " + _agent.destination);
             }
             else //Make him move randomly around the map
             {
                 _agent.SetDestination(_waypoints[_currentMovePoint].transform.position);
                 float dtp = Vector3.Distance(_transform.position, _waypoints[_currentMovePoint].transform.position);
-                if(dtp < .5f)
+                if(dtp < 1f)
                 {
-                    _currentMovePoint = Random.Range(0,3);
+                    //Prevent Same Point generating twice
+                    int newPoint = Random.Range(0,4);
+                    while(newPoint == _currentMovePoint)
+                    {
+                        newPoint = Random.Range(0,4);
+                        print("Same point, generating new point");
+                    }
+                    _currentMovePoint = newPoint;
+
                     _agent.SetDestination(_waypoints[_currentMovePoint].transform.position);
                 }
+                print("Moving to Waypoint at: " + _agent.destination);
             }
         }
     }
