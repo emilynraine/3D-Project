@@ -21,15 +21,15 @@ public class CollectableObject : MonoBehaviour
 {
     public int quantity = 0;
     public InvantoryObject objectRefrence;
-    private bool justSpawned = false;
+    //private bool justSpawned = false;
 
     void Start()
     {
-        justSpawned = true;
-        StartCoroutine(SpawnSleepTimer());
+        //justSpawned = true;
+        //StartCoroutine(SpawnSleepTimer());
     }
 
-    void OnTriggerEnter(Collider other)
+   /* void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player"  && !justSpawned)
         {
@@ -51,5 +51,5 @@ public class CollectableObject : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         justSpawned = false;
-    }
+    }*/
 }
