@@ -44,7 +44,7 @@ public class PlayerLookScript : MonoBehaviour
         } else
         {
             _hit = _emptyHitObject;
-            print("emptyHit");
+            //print("emptyHit");
         }
 
         if(_hit.gameObject.tag != "Note" && _hit.gameObject.tag != "StoryNote" && _hit.gameObject.tag != "Gun" && _hit.gameObject.tag != "Car")

@@ -17,6 +17,10 @@ public class PlayerShootScript : MonoBehaviour
     public Camera _mainCamera;
     public PlayerLookScript _playerLook;
     public GameObject _emptyHitObject;
+    
+    Invantory _inventory;
+    public int _gunInventoryIndex = -1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,12 +29,25 @@ public class PlayerShootScript : MonoBehaviour
         _gun.SetActive(false);
         _monster = FindObjectOfType<MonsterScript>();
         _playerLook = FindObjectOfType<PlayerLookScript>();
+        _inventory = GetComponent<Invantory>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(_playPickup)
+        print("gun inventory index: " + _gunInventoryIndex);
+        print("curr selected: " + _inventory.getCurrSelected());
+
+        if (_inventory.getCurrSelected() == _gunInventoryIndex)
+        {
+            _gun.SetActive(true);
+        }
+        else
+        {
+            _gun.SetActive(false);
+        }
+
+            if (_playPickup)
         {
             _playPickup = false;
             _playerSource.PlayOneShot(_gunPickUp);

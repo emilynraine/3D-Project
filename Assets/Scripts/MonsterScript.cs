@@ -92,7 +92,7 @@ public class MonsterScript : MonoBehaviour
 
                     _agent.SetDestination(_waypoints[_currentMovePoint].transform.position);
                 }
-                print("Moving to Waypoint at: " + _agent.destination);
+                //print("Moving to Waypoint at: " + _agent.destination);
             }
         }
     }
