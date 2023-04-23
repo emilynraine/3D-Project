@@ -411,6 +411,10 @@ PrefabInstance:
       propertyPath: invantoryRoot
       value: 
       objectReference: {fileID: 50926607}
+    - target: {fileID: 114000012448588710, guid: 7f0e87d23ed0c0f4cb5bc4439adc5a09, type: 3}
+      propertyPath: invantoryObjectTemplate
+      value: 
+      objectReference: {fileID: 2068517244}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f0e87d23ed0c0f4cb5bc4439adc5a09, type: 3}
 --- !u!1001 &558347848
@@ -1052,3 +1056,8 @@ PrefabInstance:
     - {fileID: 114000012872984596, guid: bdb272b00dfaffe47b10db1ad12c742f, type: 3}
     - {fileID: 135000012787771040, guid: bdb272b00dfaffe47b10db1ad12c742f, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: bdb272b00dfaffe47b10db1ad12c742f, type: 3}
+--- !u!1 &2068517244 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1000013798896022, guid: 91210ac9267d1654cbf08710c5d60e28, type: 3}
+  m_PrefabInstance: {fileID: 214088105}
+  m_PrefabAsset: {fileID: 0}

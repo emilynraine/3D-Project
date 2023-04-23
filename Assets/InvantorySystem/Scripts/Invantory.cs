@@ -107,7 +107,7 @@ public class Invantory : MonoBehaviour
 
     private void InitGUI()
     {
-        float padding = 5.0f;
+        float padding = 80.0f;
 
         bool even = maxInvantorySlots%2 == 0;
         int slotCounter = 0;
