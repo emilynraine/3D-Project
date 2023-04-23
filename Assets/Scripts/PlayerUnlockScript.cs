@@ -7,6 +7,7 @@ public class PlayerUnlockScript : MonoBehaviour
     Invantory _inventory;
     public int _keyInventoryIndex = -1;
     public GameObject _key;
+    public bool _hasKey;
 
     // Start is called before the first frame update
     void Start()
@@ -24,9 +25,11 @@ public class PlayerUnlockScript : MonoBehaviour
         if (_inventory.getCurrSelected() == _keyInventoryIndex)
         {
             _key.SetActive(true);
+            _hasKey = true;
         }
         else
         {
+            _hasKey = false;
             _key.SetActive(false);
         }
     }
