@@ -35,8 +35,8 @@ public class PlayerShootScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print("gun inventory index: " + _gunInventoryIndex);
-        print("curr selected: " + _inventory.getCurrSelected());
+        //print("gun inventory index: " + _gunInventoryIndex);
+        //print("curr selected: " + _inventory.getCurrSelected());
 
         if (_inventory.getCurrSelected() == _gunInventoryIndex)
         {

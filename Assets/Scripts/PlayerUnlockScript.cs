@@ -19,8 +19,8 @@ public class PlayerUnlockScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print("key inventory index: " + _keyInventoryIndex);
-        print("curr selected: " + _inventory.getCurrSelected());
+        //print("key inventory index: " + _keyInventoryIndex);
+        //print("curr selected: " + _inventory.getCurrSelected());
 
         if (_inventory.getCurrSelected() == _keyInventoryIndex)
         {
