@@ -7,14 +7,16 @@ public class DoorMech : MonoBehaviour
     public PlayerLookScript _playerLook;
     PlayerUnlockScript _playerUnlock;
 	public Vector3 OpenRotation, CloseRotation;
-
+	public AudioSource _audioSource;
+	public AudioClip _unlockClip;
 	public float rotSpeed = 1f;
 
-	public bool _openDoor;
+	public bool _openDoor = false;
 
 
 	void Start()
 	{
+		_audioSource = GetComponent<AudioSource>();
 		_playerLook = FindObjectOfType<PlayerLookScript>();
 		_playerUnlock= FindObjectOfType<PlayerUnlockScript>();
 	}
@@ -23,12 +25,12 @@ public class DoorMech : MonoBehaviour
 	void Update()
 	{
 
-        if (_playerLook._hit.tag == "Door" && _playerUnlock._hasKey)
+        if (_playerLook._hit.tag == "Door" && _playerUnlock._hasKey && _openDoor == false)
         {
             _playerLook._pickupText.text = "Press 'E' to open";
             _playerLook._pickupText.enabled = true;
         }
-		else if(_playerLook._hit.tag == "Door" && !_playerUnlock._hasKey)
+		else if(_playerLook._hit.tag == "Door" && !_playerUnlock._hasKey && _openDoor == false)
 		{
 
             _playerLook._pickupText.text = "The door is locked.";
@@ -42,6 +44,7 @@ public class DoorMech : MonoBehaviour
 		if (_playerLook._hit.tag == "Door" && Input.GetKeyDown(KeyCode.E) && _playerUnlock._hasKey)
 		{
 			_openDoor = true;
+			_audioSource.PlayOneShot(_unlockClip);
            
         }
 		if (_openDoor)

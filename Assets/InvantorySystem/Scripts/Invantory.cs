@@ -21,8 +21,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class Invantory : MonoBehaviour
-{
+public class Invantory : MonoBehaviour {
+
+    public AudioSource _audioSource;
+    public AudioClip _slotSwitchClip;
     [Tooltip("Resets the entire invantory system to have 0 items picked up. This is useful for testing in editor and for restarting each game")]
     public bool resetInvantoryOnStart = true;
     private List<InvantoryObject> objectsInInvantory;
@@ -37,6 +39,7 @@ public class Invantory : MonoBehaviour
 
     void Start()
     {
+        _audioSource = GetComponent<AudioSource>();
         objectsInInvantory = new List<InvantoryObject>();
         invantorySlots = new List<GameObject>();
         //invantoryObjectTemplate = GameObject.Find("InvantoryTemplate");
@@ -67,13 +70,14 @@ public class Invantory : MonoBehaviour
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
             ToggleSlot(false);
 
-        if (Input.GetButtonDown("Submit"))
-            UseSelectedItem();
+      /*  if (Input.GetButtonDown("Submit"))
+            UseSelectedItem();*/
         
     }
 
     private void ToggleSlot(bool goUp)
     {
+        _audioSource.PlayOneShot(_slotSwitchClip);
         invantorySlots[currentlySelectedItem].GetComponent<InvantorySlot>().ToggleSlot(false);
         if (goUp)
             currentlySelectedItem++;
@@ -92,6 +96,7 @@ public class Invantory : MonoBehaviour
 
     public void ToggleSlotAtID(int id)
     {
+
         invantorySlots[currentlySelectedItem].GetComponent<InvantorySlot>().ToggleSlot(false);
         currentlySelectedItem = id;
         currentlySelectedItem = Mathf.Clamp(currentlySelectedItem, 0,invantorySlots.Count-1);

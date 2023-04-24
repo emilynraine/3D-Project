@@ -25,7 +25,7 @@ public class KeyScript : MonoBehaviour
             {
                 _inventory.AddItemToInvanntory(this.GetComponent<CollectableObject>());
                 _playerUnlock._keyInventoryIndex = _inventory.getNumInInventory() - 1;
-               // _playerUnlock._playPickup = true;
+                _playerUnlock._playPickup = true;
                 _playerUnlock._key.SetActive(true);
                 gameObject.SetActive(false);
             }

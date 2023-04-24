@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class PlayerUnlockScript : MonoBehaviour
 {
+    AudioSource _playerSource;
+    public AudioClip _keyPickUp;
     Invantory _inventory;
     public int _keyInventoryIndex = -1;
     public GameObject _key;
     public bool _hasKey;
+    public bool _playPickup = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        _playerSource = GetComponent<AudioSource>();
         _key.SetActive(false);
         _inventory = GetComponent<Invantory>();
     }
@@ -31,6 +35,12 @@ public class PlayerUnlockScript : MonoBehaviour
         {
             _hasKey = false;
             _key.SetActive(false);
+        }
+
+        if (_playPickup)
+        {
+            _playPickup = false;
+            _playerSource.PlayOneShot(_keyPickUp);
         }
     }
 }
