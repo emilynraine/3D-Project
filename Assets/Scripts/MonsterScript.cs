@@ -24,6 +24,12 @@ public class MonsterScript : MonoBehaviour
     public GameObject[] _waypoints;
     int _currentMovePoint;
 
+    public GameObject _frontBuilding;
+    public FrontBuildingScript _frontS;
+
+    public float _time = 0;
+    public float _timeSincePlayer = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,9 +37,11 @@ public class MonsterScript : MonoBehaviour
         _transform = transform;
         _animator = GetComponent<Animator>();
         _rbody = GetComponent<Rigidbody>();
+        _frontS = FindObjectOfType<FrontBuildingScript>();
         _player = FindObjectOfType<PlayerShootScript>();
         _manager = FindObjectOfType<MSManagerScript>();
         _playerObject = GameObject.FindWithTag("Player");
+        _frontBuilding = GameObject.FindWithTag("FrontBuilding");
         _agent = GetComponent<NavMeshAgent>();
         _currentMovePoint = Random.Range(0,3);
         _waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
@@ -50,7 +58,8 @@ public class MonsterScript : MonoBehaviour
             _monsterActive = true;
         }
 
-        _monsterActive = true;
+        _time += Time.deltaTime;
+
         if(_monsterActive)
         {
             if(_gotShot || _fleeing) //Make him flee from the player to another location
@@ -68,6 +77,15 @@ public class MonsterScript : MonoBehaviour
                 if(distance < 2f)
                 {
                     _fleeing = false;
+                }
+            }
+            else if(_frontS._playerEnter)
+            {
+                _agent.SetDestination(_frontBuilding.transform.position);
+                if(_time > 3f)
+                {
+                    _time = 0;
+                    _frontS._playerEnter = false;
                 }
             }
             else if(_followingPlayer) //Follow the player's position directly
