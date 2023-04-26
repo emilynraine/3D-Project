@@ -25,10 +25,22 @@ public class MonsterScript : MonoBehaviour
     int _currentMovePoint;
 
     public GameObject _frontBuilding;
+    public bool _arrived = false;
     public FrontBuildingScript _frontS;
+    public bool _handleBuilding = true;
+
+    public GameObject _alley;
+    public bool _inAlley = false;
+    public AlleyScript _alleyS;
+    public bool _handleAlley = true;
 
     public float _time = 0;
     public float _timeSincePlayer = 0;
+
+    public float _freezeTime = 0;
+    public Vector3 _lastPosition;
+    public Vector3 _curPosition;
+    public float _positionTimeCheck = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -38,18 +50,23 @@ public class MonsterScript : MonoBehaviour
         _animator = GetComponent<Animator>();
         _rbody = GetComponent<Rigidbody>();
         _frontS = FindObjectOfType<FrontBuildingScript>();
+        _alleyS = FindObjectOfType<AlleyScript>();
         _player = FindObjectOfType<PlayerShootScript>();
         _manager = FindObjectOfType<MSManagerScript>();
         _playerObject = GameObject.FindWithTag("Player");
         _frontBuilding = GameObject.FindWithTag("FrontBuilding");
+        _alley = GameObject.FindWithTag("Alley");
         _agent = GetComponent<NavMeshAgent>();
         _currentMovePoint = Random.Range(0,3);
         _waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+        _curPosition = _transform.position;
+        _lastPosition = _transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+        _curPosition = _transform.position;
         _animator.SetBool("Idle", _rbody.velocity.x == 0.0f && _rbody.velocity.z == 0.0f && !_player._hitCRPlaying);
         _animator.SetBool("Forward", (_rbody.velocity.x > 0.0f || _rbody.velocity.z > 0.0f) && !_player._hitCRPlaying);
         
@@ -57,8 +74,6 @@ public class MonsterScript : MonoBehaviour
         {
             _monsterActive = true;
         }
-
-        _time += Time.deltaTime;
 
         if(_monsterActive)
         {
@@ -79,21 +94,84 @@ public class MonsterScript : MonoBehaviour
                     _fleeing = false;
                 }
             }
-            else if(_frontS._playerEnter)
-            {
-                _agent.SetDestination(_frontBuilding.transform.position);
-                if(_time > 3f)
-                {
-                    _time = 0;
-                    _frontS._playerEnter = false;
-                }
-            }
-            else if(_followingPlayer) //Follow the player's position directly
+            else if(_followingPlayer) // Make him follow the player's position directly
             {
                 _agent.SetDestination(_playerObject.transform.position);
                 print("Following Player to: " + _agent.destination);
+                _frontS._playerEnter = false;
+                _arrived = false;
+                _handleAlley = true;
+                _alleyS._playerEnterAlley = false;
+                _inAlley = false;
+                _handleBuilding = true;
             }
-            else //Make him move randomly around the map
+            else if(_alleyS._playerEnterAlley || _frontS._playerEnter)
+            {
+                if(!_handleAlley)
+                {
+                    _frontS._playerEnter = false;
+                    _arrived = false;
+                    _handleAlley = true;
+                }
+                if(!_handleBuilding)
+                {
+                    _alleyS._playerEnterAlley = false;
+                    _inAlley = false;
+                    _handleBuilding = true;
+                }
+                if(_alleyS._playerEnterAlley) // Make him go check the alleys
+                {
+                    print("ALLEY");
+                    if(!_inAlley)
+                    {
+                        _agent.SetDestination(_alley.transform.position);
+                        float distance = Vector3.Distance(_transform.position, _alley.transform.position);
+                        if(distance < 2f)
+                        {
+                            _inAlley = true;
+                            _time = 0;
+                        }
+                    } 
+                    else
+                    {
+                        _time += Time.deltaTime;
+                    }
+                    if(_time > 3f)
+                    {
+                        _time = 0;
+                        _alleyS._playerEnterAlley = false;
+                        _inAlley = false;
+                        print("DONE WITH ALLEY");
+                    }
+                }
+
+                if(_frontS._playerEnter) //Make him go check the front of the building
+                {
+                    print("IN BUILDING");
+                    if(!_arrived)
+                    {
+                        _agent.SetDestination(_frontBuilding.transform.position);
+                        float distance = Vector3.Distance(_transform.position, _frontBuilding.transform.position);
+                        if(distance < 2f)
+                        {
+                            _arrived = true;
+                            _time = 0;
+                        }
+                    } 
+                    else
+                    {
+                        _time += Time.deltaTime;
+                    }
+                    if(_time > 3f)
+                    {
+                        _time = 0;
+                        _frontS._playerEnter = false;
+                        _arrived = false;
+                        print("DONE WITH BUILDING");
+                    }
+                }
+            }
+            else // Make him move randomly around the map
             {
                 _agent.SetDestination(_waypoints[_currentMovePoint].transform.position);
                 float dtp = Vector3.Distance(_transform.position, _waypoints[_currentMovePoint].transform.position);
@@ -104,13 +182,37 @@ public class MonsterScript : MonoBehaviour
                     while(newPoint == _currentMovePoint)
                     {
                         newPoint = Random.Range(0,4);
-                        print("Same point, generating new point");
                     }
                     _currentMovePoint = newPoint;
 
                     _agent.SetDestination(_waypoints[_currentMovePoint].transform.position);
                 }
-                //print("Moving to Waypoint at: " + _agent.destination);
+            }
+
+            _positionTimeCheck += Time.deltaTime;
+            print("FROZEN for: " + _freezeTime);
+            if(_positionTimeCheck > 1)
+            {
+                float dtp = Vector3.Distance(_lastPosition, _curPosition);
+                _positionTimeCheck = 0;
+                _lastPosition = _curPosition;
+                if(dtp < 0.25f)
+                {
+                    _freezeTime += 1;
+                }
+                else
+                {
+                    _freezeTime = 0;
+                }
+            }
+
+            if(_freezeTime > 4.0f)
+            {
+                _agent.enabled = false;
+                _agent.enabled = true;
+                _agent.ResetPath();
+                _agent.Warp(new Vector3(-204f, 69.76448f, -5f));
+                _freezeTime = 0;
             }
         }
     }

@@ -40,6 +40,7 @@ public class MSManagerScript : MonoBehaviour
         StartCoroutine(PlaySounds(_roarClip, _loopClip));
         
         Array.Sort(_notes, new NoteComparer());
+        StartCoroutine(BlackOut(false));
     }
 
     // Update is called once per frame

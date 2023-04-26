@@ -18,6 +18,7 @@ TagManager:
   - Key
   - Door
   - FrontBuilding
+  - Alley
   layers:
   - Default
   - TransparentFX
