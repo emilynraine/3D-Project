@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering.PostProcessing;
 
 public class PlayerMoveScript : MonoBehaviour
 {
@@ -23,13 +24,30 @@ public class PlayerMoveScript : MonoBehaviour
     public AudioClip _footstepSound;
     public AudioClip _tenseSound1;
     public Text _boundsText;
+    Camera _mainCamera;
+
+    public AudioSource _mouth;
+    public AudioClip _sprintBreath;
+    public AudioClip _tiredBreath;
 
     bool _playStep = false;
     float _timeSinceFoot = 1;
     float _timeSinceTense1 = 2;
+    float _timeBetweenSteps = .72f;
+    float _timeSprinting = 0;
+    bool _playTired = false;
+    bool _slowingBreath = false;
+
+    public PostProcessVolume _volume;
+    Vignette _vig;
+
     // Start is called before the first frame update
     void Start()
     {
+        // _vig = ScriptableObject.CreateInstance<Vignette>();
+        // _vig.enabled.Override(true);
+        // _vig.intensity.Override(1f);
+        _mainCamera = Camera.main;
         _rbody = GetComponent<Rigidbody>();
         _transform = transform;
         _playerSource = GetComponent<AudioSource>();
@@ -46,7 +64,7 @@ public class PlayerMoveScript : MonoBehaviour
             //Timing for footsteps
             _timeSinceFoot = _timeSinceFoot + Time.deltaTime;
             _timeSinceTense1 = _timeSinceTense1 + Time.deltaTime;
-            if (_timeSinceFoot > .72f)
+            if (_timeSinceFoot > _timeBetweenSteps)
             {
                 _playStep = true;
             }
@@ -73,6 +91,71 @@ public class PlayerMoveScript : MonoBehaviour
                 _transform.position = new Vector3(_transform.position.x, _transform.position.y, _zMax);
                 _boundsText.enabled = true;
             }
+
+            //SPRINT =====
+            //Check to see if the player has run out of sprint or has regained it
+            if(_timeSprinting > 5)
+            {
+                if(!_playTired)
+                {
+                    _mouth.clip = _tiredBreath;
+                    _mouth.pitch = .9f;
+                    _mouth.Play();
+                    _playTired = true;
+                }
+                _timeSprinting += Time.deltaTime;
+            }
+            if(_timeSprinting > 10)
+            {
+                _timeSprinting = 0;
+                _playTired = false;
+                _mouth.Stop();
+            }
+
+            //Check to see if the player is trying to sprint
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                if(!_playTired)
+                {
+                    _slowingBreath = true;
+                }
+            }
+
+            if(_slowingBreath)
+            {
+                if(_mouth.volume > 0.0)
+                {
+                    _mouth.volume -= .01f;
+                }
+                else
+                {
+                    _mouth.Stop();
+                    _mouth.volume = 1;
+                    _slowingBreath = false;
+                }
+            }
+
+            //Decide the player's speed based on their sprint
+            if(Input.GetKey(KeyCode.LeftShift) && _timeSprinting < 5)
+            {
+                _slowingBreath = false;
+                if(Input.GetKeyDown(KeyCode.LeftShift) || _timeSprinting == 0)
+                {
+                    _mouth.volume = 1f;
+                    _mouth.clip = _sprintBreath;
+                    _mouth.pitch = 1f;
+                    _mouth.Play();
+                }
+                _scale = 8;
+                _timeBetweenSteps = .4f;
+                _timeSprinting += Time.deltaTime;
+            }
+            else
+            {
+                _scale = 4;
+                _timeBetweenSteps = .72f;
+            }
+            //SPRINT =====
 
             //Movement
             Vector3 move = new Vector3(_scale * Input.GetAxis("Horizontal"), 0, _scale * Input.GetAxis("Vertical"));
