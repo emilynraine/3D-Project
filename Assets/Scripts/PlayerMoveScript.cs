@@ -37,6 +37,7 @@ public class PlayerMoveScript : MonoBehaviour
     float _timeSprinting = 0;
     bool _playTired = false;
     bool _slowingBreath = false;
+    bool _outOfBreath = false;
 
     public PostProcessVolume _volume;
     Vignette _vig;
@@ -94,8 +95,9 @@ public class PlayerMoveScript : MonoBehaviour
 
             //SPRINT =====
             //Check to see if the player has run out of sprint or has regained it
-            if(_timeSprinting > 5)
+            if(_timeSprinting > 5 || _outOfBreath)
             {
+                _outOfBreath = true;
                 if(!_playTired)
                 {
                     _mouth.clip = _tiredBreath;
@@ -107,6 +109,7 @@ public class PlayerMoveScript : MonoBehaviour
             }
             if(_timeSprinting > 10)
             {
+                _outOfBreath = false;
                 _timeSprinting = 0;
                 _playTired = false;
                 _mouth.Stop();
@@ -118,6 +121,11 @@ public class PlayerMoveScript : MonoBehaviour
                 if(!_playTired)
                 {
                     _slowingBreath = true;
+                }
+
+                if(!_outOfBreath)
+                {
+                    _timeSprinting -= Time.deltaTime;
                 }
             }
 
