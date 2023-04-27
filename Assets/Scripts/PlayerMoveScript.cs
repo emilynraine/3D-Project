@@ -39,15 +39,14 @@ public class PlayerMoveScript : MonoBehaviour
     bool _slowingBreath = false;
     bool _outOfBreath = false;
 
-    public PostProcessVolume _volume;
-    Vignette _vig;
+    PostProcessVolume _volume;
+    Vignette _vignette;
 
     // Start is called before the first frame update
     void Start()
     {
-        // _vig = ScriptableObject.CreateInstance<Vignette>();
-        // _vig.enabled.Override(true);
-        // _vig.intensity.Override(1f);
+        _volume = gameObject.GetComponent<PostProcessVolume>();
+
         _mainCamera = Camera.main;
         _rbody = GetComponent<Rigidbody>();
         _transform = transform;
