@@ -43,6 +43,8 @@ public class MSManagerScript : MonoBehaviour
         
         Array.Sort(_notes, new NoteComparer());
         StartCoroutine(BlackOut(false));
+
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
