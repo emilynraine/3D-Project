@@ -61,7 +61,7 @@ public class NoteScript : MonoBehaviour
         print("my id is: " + _id);
         //_messageString = _manager._messages[_id];
 
-        print("my message is: " + _messageString);
+        print("my message is: " + _messageString2);
         
 
         if(_id == 0)

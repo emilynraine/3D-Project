@@ -97,7 +97,7 @@ public class MonsterScript : MonoBehaviour
             else if(_followingPlayer) // Make him follow the player's position directly
             {
                 _agent.SetDestination(_playerObject.transform.position);
-                print("Following Player to: " + _agent.destination);
+                //print("Following Player to: " + _agent.destination);
                 _frontS._playerEnter = false;
                 _arrived = false;
                 _handleAlley = true;
@@ -121,7 +121,7 @@ public class MonsterScript : MonoBehaviour
                 }
                 if(_alleyS._playerEnterAlley) // Make him go check the alleys
                 {
-                    print("ALLEY");
+                    //print("ALLEY");
                     if(!_inAlley)
                     {
                         _agent.SetDestination(_alley.transform.position);
@@ -141,13 +141,13 @@ public class MonsterScript : MonoBehaviour
                         _time = 0;
                         _alleyS._playerEnterAlley = false;
                         _inAlley = false;
-                        print("DONE WITH ALLEY");
+                       // print("DONE WITH ALLEY");
                     }
                 }
 
                 if(_frontS._playerEnter) //Make him go check the front of the building
                 {
-                    print("IN BUILDING");
+                   // print("IN BUILDING");
                     if(!_arrived)
                     {
                         _agent.SetDestination(_frontBuilding.transform.position);
@@ -167,7 +167,7 @@ public class MonsterScript : MonoBehaviour
                         _time = 0;
                         _frontS._playerEnter = false;
                         _arrived = false;
-                        print("DONE WITH BUILDING");
+                        //print("DONE WITH BUILDING");
                     }
                 }
             }
@@ -190,7 +190,7 @@ public class MonsterScript : MonoBehaviour
             }
 
             _positionTimeCheck += Time.deltaTime;
-            print("FROZEN for: " + _freezeTime);
+            //print("FROZEN for: " + _freezeTime);
             if(_positionTimeCheck > 1)
             {
                 float dtp = Vector3.Distance(_lastPosition, _curPosition);

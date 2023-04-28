@@ -8,7 +8,7 @@ using System;
 public class MSManagerScript : MonoBehaviour
 {
     public string[] _messages = {"I sense something following me. If you find this, it may already have taken me.\nWill grab gun and take cover on fire dept. roof.", "Seems safe for the time being. Will stay here with gun...\nwait, I just heard something. I'm afraid th", 
-        "1/3\nThere's a reason this city is so empty.", "2/3 \nAlways just out of sight.", "3/3 \nWhat a shame, you would have made an excellent meal..."};
+        "1/4\nThere's a reason this city is so empty.", "2/4 \nAlways just out of sight.", "3/4 \nYou're not special. You won't escape the fate of the others.", "4/4 \nWhat a shame, you would have made an excellent meal..."};
     public int _noteNum = 0;
     public GameObject _blackoutSquare;
     public bool _storyStart = false;
@@ -113,7 +113,8 @@ public class MSManagerScript : MonoBehaviour
 
    public void SetNextNoteActive()
     {
-        if (_noteNum + 1 <= _notes.Length - 1)
+        print("Notes length: " + _notes.Length);
+        if (_noteNum + 1 < _notes.Length)
         {
             _noteNum++;
             print("now on note: " + _noteNum);
