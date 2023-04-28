@@ -30,6 +30,8 @@ public class MSManagerScript : MonoBehaviour
     [SerializeField]
     private AudioClip _loopClip;
 
+    public bool _spawnInBuilding = false;
+
     // Start is called before the first frame update
     void Start()
     {

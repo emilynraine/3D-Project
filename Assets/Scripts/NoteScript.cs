@@ -15,6 +15,7 @@ public class NoteScript : MonoBehaviour
     PlayerLookScript _player;
     bool _inNote = false;
     public bool _putDownBefore = false;
+
     MSManagerScript _manager;
     CameraScript _mainCamera;
     GameObject _lastNote;
@@ -37,14 +38,28 @@ public class NoteScript : MonoBehaviour
         var rand = new Random();
         if (_id > 1)
         {
-            
-            int _randPos = rand.Next(0, _manager._spawnPts.Length);
-            while (_randPos == _manager._lastPos) {
-                _randPos = rand.Next(0, _manager._spawnPts.Length);
+            if (_manager._spawnInBuilding)
+            {
+                int _randPos = rand.Next(0, _manager._spawnPts.Length);
+                while (_randPos == _manager._lastPos)
+                {
+                    _randPos = rand.Next(0, _manager._spawnPts.Length);
+                }
+                transform.position = _manager._spawnPts[_randPos].transform.position;
+                _manager._lastPos = _randPos;
+            }
+            else
+            {
+                int _randPos = rand.Next(0, 6);
+                while (_randPos == _manager._lastPos)
+                {
+                    _randPos = rand.Next(0, 6);
+                }
+                transform.position = _manager._spawnPts[_randPos].transform.position;
+                _manager._lastPos = _randPos;
             }
 
-            transform.position = _manager._spawnPts[_randPos].transform.position;
-            _manager._lastPos = _randPos;
+
             
 
         }
