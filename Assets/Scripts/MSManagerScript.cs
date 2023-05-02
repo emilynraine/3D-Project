@@ -10,13 +10,11 @@ public class MSManagerScript : MonoBehaviour
     public static bool _paused = false;
     public GameObject _pauseCanvas;
     public GameObject _inventoryCanvas;
-    public GameObject _mouseImage;
 
     Color _selectedBrown = new Color(81/255f, 56/255f, 23/255f, 255/255f);
     Color _unselectedTan = new Color(232/255f, 213/255f, 183/255f, 255/255f);
     // public GameObject _controlsCanvas;
 
-    private int _selectedButton = 0;
 
     public string[] _messages = {"I sense something following me. If you find this, it may already have taken me.\nWill grab gun and take cover on fire dept. roof.", "Seems safe for the time being. Will stay here with gun...\nwait, I just heard something. I'm afraid th",
         "1/4\nThere's a reason this city is so empty.", "2/4 \nAlways just out of sight.", "3/4 \nYou're not special. You won't escape the fate of the others.", "4/4 \nWhat a shame, you would have made an excellent meal..."};
@@ -52,7 +50,6 @@ public class MSManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _mouseImage.SetActive(false);
         _audioSource = GetComponent<AudioSource>();
         _pauseCanvas.SetActive(false);
         // _controlsCanvas.SetActive(_paused);
@@ -76,19 +73,7 @@ public class MSManagerScript : MonoBehaviour
 
         if (_paused)
         {
-            if (_hasMoved)
-            {
-                _mouseImage.SetActive(false);
-            }
-            if (Input.GetAxis("Mouse ScrollWheel") > 0)
-                ToggleButton(true);
-            if (Input.GetAxis("Mouse ScrollWheel") < 0)
-                ToggleButton(false);
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                _buttons[_selectedButton].GetComponent<Button>().onClick.Invoke();
-            }
+            Cursor.visible = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -125,28 +110,6 @@ public class MSManagerScript : MonoBehaviour
             StartCoroutine(BlackOut(true));
             Invoke("LoadEnd", 4f);
         }
-    }
-
-    private void ToggleButton(bool goUp)
-    {
-        _hasMoved = true;
-        _audioSource.PlayOneShot(_slotSwitchClip);
-        
-        _buttons[_selectedButton].GetComponent<Button>().GetComponent<Image>().color = _unselectedTan;
-        _buttons[_selectedButton].GetComponent<Button>().GetComponentInChildren<Text>().color = _selectedBrown;
-        if (goUp)
-        {
-            _selectedButton++;
-        }
-        else
-        {
-            _selectedButton--;
-
-        }
-        _selectedButton = Mathf.Clamp(_selectedButton, 0, _buttons.Length - 1);
-        _buttons[_selectedButton].GetComponent<Button>().GetComponent<Image>().color = _selectedBrown;
-        _buttons[_selectedButton].GetComponent<Button>().GetComponentInChildren<Text>().color = _unselectedTan;
-
     }
 
 
@@ -196,35 +159,68 @@ public class MSManagerScript : MonoBehaviour
         yield return new WaitForSeconds(_audioSource.clip.length);
     }
 
+    public void PlayHover(GameObject button)
+    {
+        button.GetComponentInChildren<Text>().color = _unselectedTan;
+        //button.GetComponentInChildren<Image>().color = _selectedBrown;
+        StartCoroutine(Hover());
+    }
+
+    public void PlayHoverExit(GameObject button)
+    {
+       // button.GetComponentInChildren<Image>().color = _unselectedTan;
+        button.GetComponentInChildren<Text>().color = _selectedBrown;
+    }
+
+    public IEnumerator Hover()
+    {
+        _audioSource.clip = _slotSwitchClip;
+        _audioSource.Play();
+        yield return new WaitForSeconds(_audioSource.clip.length);
+    }
 
     void Pause()
     {
-        StartCoroutine(SenseInactivePause());
+        /*if (_paused)
+        {
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }*/
         _inventoryCanvas.SetActive(!_paused);
         _pauseCanvas.SetActive(_paused);
     }
 
-    public void OnResumeButtonClick()
+    public void OnResumeButtonClick(GameObject button)
     {
+        button.GetComponentInChildren<Text>().color = _selectedBrown;
+        //button.GetComponentInChildren<Image>().color = _unselectedTan;
         _paused = !_paused;
         Pause();
     }
 
-    public void OnRestartButtonClick()
+    public void OnRestartButtonClick(GameObject button)
     {
+        button.GetComponentInChildren<Text>().color = _selectedBrown;
+       // button.GetComponentInChildren<Image>().color = _unselectedTan;
         _pauseCanvas.SetActive(false);
         print("Restart");
         StartCoroutine(BlackOut(true));
         Invoke("MainScene", 3f);
     }
 
-    public void OnControlsButtonClick()
+    public void OnControlsButtonClick(GameObject button)
     {
-
+        button.GetComponentInChildren<Text>().color = _selectedBrown;
+       // button.GetComponentInChildren<Image>().color = _unselectedTan;
     }
 
-    public void OnMenuButtonClick()
+    public void OnMenuButtonClick(GameObject button)
     {
+        button.GetComponentInChildren<Text>().color = _selectedBrown;
+        //button.GetComponentInChildren<Image>().color = _unselectedTan;
         _pauseCanvas.SetActive(false);
         StartCoroutine(BlackOut(true));
         Invoke("TitleScene", 3f);
@@ -271,52 +267,6 @@ public class MSManagerScript : MonoBehaviour
                 yield return null;
             }
         }
-    }
-
-    public IEnumerator SenseInactivePause()
-    {
-        yield return new WaitForSeconds(3.0f);
-        if (!_hasMoved)
-        {
-
-            float fadeSpeed = .3f;
-            Color objectColor = _mouseImage.GetComponent<Image>().color;
-            objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, 0.0f);
-            _mouseImage.SetActive(true);
-
-            float fadeAmount;
-
-            while (_mouseImage.GetComponent<Image>().color.a < 0.5)
-            {
-                fadeAmount = objectColor.a + (fadeSpeed * Time.deltaTime);
-
-                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
-                _mouseImage.GetComponent<Image>().color = objectColor;
-                yield return null;
-            }
-            yield return new WaitForSeconds(0.5f);
-
-            while (_mouseImage.GetComponent<Image>().color.a > 0)
-            {
-                fadeAmount = objectColor.a - (fadeSpeed * Time.deltaTime);
-
-                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
-                _mouseImage.GetComponent<Image>().color = objectColor;
-                yield return null;
-            }
-            yield return new WaitForSeconds(0.5f);
-
-            while (_mouseImage.GetComponent<Image>().color.a < 0.5)
-            {
-                fadeAmount = objectColor.a + (fadeSpeed * Time.deltaTime);
-
-                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
-                _mouseImage.GetComponent<Image>().color = objectColor;
-                yield return null;
-            }
-
-        }
-
     }
 
 }
