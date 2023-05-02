@@ -7,14 +7,25 @@ using System;
 
 public class MSManagerScript : MonoBehaviour
 {
-    public string[] _messages = {"I sense something following me. If you find this, it may already have taken me.\nWill grab gun and take cover on fire dept. roof.", "Seems safe for the time being. Will stay here with gun...\nwait, I just heard something. I'm afraid th", 
+    public static bool _paused = false;
+    public GameObject _pauseCanvas;
+    public GameObject _inventoryCanvas;
+    public GameObject _mouseImage;
+
+    Color _selectedBrown = new Color(81/255f, 56/255f, 23/255f, 255/255f);
+    Color _unselectedTan = new Color(232/255f, 213/255f, 183/255f, 255/255f);
+    // public GameObject _controlsCanvas;
+
+    private int _selectedButton = 0;
+
+    public string[] _messages = {"I sense something following me. If you find this, it may already have taken me.\nWill grab gun and take cover on fire dept. roof.", "Seems safe for the time being. Will stay here with gun...\nwait, I just heard something. I'm afraid th",
         "1/4\nThere's a reason this city is so empty.", "2/4 \nAlways just out of sight.", "3/4 \nYou're not special. You won't escape the fate of the others.", "4/4 \nWhat a shame, you would have made an excellent meal..."};
     public int _noteNum = 0;
     public GameObject _blackoutSquare;
     public bool _storyStart = false;
     float _timeSinceBlackout = 0;
     public Text _pickUp;
-    
+
     public CameraScript _mainCamera;
     public PlayerMoveScript _playerMove;
 
@@ -29,12 +40,24 @@ public class MSManagerScript : MonoBehaviour
     private AudioClip _roarClip;
     [SerializeField]
     private AudioClip _loopClip;
+    [SerializeField]
+    private AudioClip _slotSwitchClip;
 
     public bool _spawnInBuilding = false;
+    public Button[] _buttons;
+    AudioSource _audioSource;
+
+    public bool _hasMoved = false;
 
     // Start is called before the first frame update
     void Start()
     {
+        _mouseImage.SetActive(false);
+        _audioSource = GetComponent<AudioSource>();
+        _pauseCanvas.SetActive(false);
+        // _controlsCanvas.SetActive(_paused);
+
+
         _playerMove = FindObjectOfType<PlayerMoveScript>();
         _mainCamera = FindObjectOfType<CameraScript>();
         _notes = FindObjectsOfType<NoteScript>(true);
@@ -50,10 +73,30 @@ public class MSManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+
+        if (_paused)
         {
-            Application.Quit();
+            if (_hasMoved)
+            {
+                _mouseImage.SetActive(false);
+            }
+            if (Input.GetAxis("Mouse ScrollWheel") > 0)
+                ToggleButton(true);
+            if (Input.GetAxis("Mouse ScrollWheel") < 0)
+                ToggleButton(false);
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                _buttons[_selectedButton].GetComponent<Button>().onClick.Invoke();
+            }
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            _paused = !_paused;
+            Pause();
+        }
+
 
         //Blackout and Wake up the player for the story
         if(_storyStart) 
@@ -84,38 +127,30 @@ public class MSManagerScript : MonoBehaviour
         }
     }
 
-    public IEnumerator BlackOut(bool fadeToBlack, float fadeSpeed = .4f)
+    private void ToggleButton(bool goUp)
     {
-        Color objectColor = _blackoutSquare.GetComponent<Image>().color;
-        float fadeAmount;
-
-        if(fadeToBlack)
+        _hasMoved = true;
+        _audioSource.PlayOneShot(_slotSwitchClip);
+        
+        _buttons[_selectedButton].GetComponent<Button>().GetComponent<Image>().color = _unselectedTan;
+        _buttons[_selectedButton].GetComponent<Button>().GetComponentInChildren<Text>().color = _selectedBrown;
+        if (goUp)
         {
-            while(_blackoutSquare.GetComponent<Image>().color.a < 1)
-            {
-                fadeAmount = objectColor.a + (fadeSpeed * Time.deltaTime);
-
-                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
-                _blackoutSquare.GetComponent<Image>().color = objectColor;
-                yield return null;
-            }
+            _selectedButton++;
         }
-
-        if(!fadeToBlack)
+        else
         {
-            while(_blackoutSquare.GetComponent<Image>().color.a > 0)
-            {
-                fadeAmount = objectColor.a - (fadeSpeed * Time.deltaTime);
+            _selectedButton--;
 
-                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
-                _blackoutSquare.GetComponent<Image>().color = objectColor;
-                yield return null;
-            }
         }
+        _selectedButton = Mathf.Clamp(_selectedButton, 0, _buttons.Length - 1);
+        _buttons[_selectedButton].GetComponent<Button>().GetComponent<Image>().color = _selectedBrown;
+        _buttons[_selectedButton].GetComponent<Button>().GetComponentInChildren<Text>().color = _unselectedTan;
+
     }
 
 
-   public void SetNextNoteActive()
+    public void SetNextNoteActive()
     {
         print("Notes length: " + _notes.Length);
         if (_noteNum + 1 < _notes.Length)
@@ -148,7 +183,7 @@ public class MSManagerScript : MonoBehaviour
 
     IEnumerator PlaySounds(AudioClip _clip1, AudioClip _clip2)
     {
-        AudioSource _audioSource = GetComponent<AudioSource>();
+        
         _audioSource.clip = _clip1;
         _audioSource.Play();
         StartCoroutine(FadeAudioSource.StartFade(_audioSource, _audioSource.clip.length, 0.0f));
@@ -161,6 +196,128 @@ public class MSManagerScript : MonoBehaviour
         yield return new WaitForSeconds(_audioSource.clip.length);
     }
 
+
+    void Pause()
+    {
+        StartCoroutine(SenseInactivePause());
+        _inventoryCanvas.SetActive(!_paused);
+        _pauseCanvas.SetActive(_paused);
+    }
+
+    public void OnResumeButtonClick()
+    {
+        _paused = !_paused;
+        Pause();
+    }
+
+    public void OnRestartButtonClick()
+    {
+        _pauseCanvas.SetActive(false);
+        print("Restart");
+        StartCoroutine(BlackOut(true));
+        Invoke("MainScene", 3f);
+    }
+
+    public void OnControlsButtonClick()
+    {
+
+    }
+
+    public void OnMenuButtonClick()
+    {
+        _pauseCanvas.SetActive(false);
+        StartCoroutine(BlackOut(true));
+        Invoke("TitleScene", 3f);
+    }
+
+
+    public void MainScene()
+    {
+        _pauseCanvas.SetActive(false);
+        SceneManager.LoadScene("DemoScene");
+    }
+
+    public void TitleScene()
+    {
+        _pauseCanvas.SetActive(false);
+        SceneManager.LoadScene("TitleScene");
+    }
+
+    public IEnumerator BlackOut(bool fadeToBlack, float fadeSpeed = .5f)
+    {
+        Color objectColor = _blackoutSquare.GetComponent<Image>().color;
+        float fadeAmount;
+
+        if (fadeToBlack)
+        {
+            while (_blackoutSquare.GetComponent<Image>().color.a < 1)
+            {
+                fadeAmount = objectColor.a + (fadeSpeed * Time.deltaTime);
+
+                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
+                _blackoutSquare.GetComponent<Image>().color = objectColor;
+                yield return null;
+            }
+        }
+
+        if (!fadeToBlack)
+        {
+            while (_blackoutSquare.GetComponent<Image>().color.a > 0)
+            {
+                fadeAmount = objectColor.a - (fadeSpeed * Time.deltaTime);
+
+                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
+                _blackoutSquare.GetComponent<Image>().color = objectColor;
+                yield return null;
+            }
+        }
+    }
+
+    public IEnumerator SenseInactivePause()
+    {
+        yield return new WaitForSeconds(3.0f);
+        if (!_hasMoved)
+        {
+
+            float fadeSpeed = .3f;
+            Color objectColor = _mouseImage.GetComponent<Image>().color;
+            objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, 0.0f);
+            _mouseImage.SetActive(true);
+
+            float fadeAmount;
+
+            while (_mouseImage.GetComponent<Image>().color.a < 0.5)
+            {
+                fadeAmount = objectColor.a + (fadeSpeed * Time.deltaTime);
+
+                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
+                _mouseImage.GetComponent<Image>().color = objectColor;
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.5f);
+
+            while (_mouseImage.GetComponent<Image>().color.a > 0)
+            {
+                fadeAmount = objectColor.a - (fadeSpeed * Time.deltaTime);
+
+                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
+                _mouseImage.GetComponent<Image>().color = objectColor;
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.5f);
+
+            while (_mouseImage.GetComponent<Image>().color.a < 0.5)
+            {
+                fadeAmount = objectColor.a + (fadeSpeed * Time.deltaTime);
+
+                objectColor = new Color(objectColor.r, objectColor.b, objectColor.g, fadeAmount);
+                _mouseImage.GetComponent<Image>().color = objectColor;
+                yield return null;
+            }
+
+        }
+
+    }
 
 }
 
@@ -189,5 +346,6 @@ class NoteComparer : IComparer
     {
         return (new CaseInsensitiveComparer()).Compare(((NoteScript)x)._id, ((NoteScript)y)._id);
     }
+
 }
 

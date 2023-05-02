@@ -16,6 +16,7 @@ public class TSMScript : MonoBehaviour
 
     void Start()
     {
+        Cursor.visible = true;
         _panel.SetActive(false);
         _img = _panel.GetComponent<Image>();
     }

@@ -64,11 +64,14 @@ public class Invantory : MonoBehaviour {
     // Update the input logic here to change how the the slots get toggled and the selected item is used.
     void Update()
     {
-        // Cycle through the in
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
-            ToggleSlot(true);
-        if (Input.GetAxis("Mouse ScrollWheel") < 0)
-            ToggleSlot(false);
+        if (!MSManagerScript._paused)
+        {
+            // Cycle through the in
+            if (Input.GetAxis("Mouse ScrollWheel") > 0)
+                ToggleSlot(true);
+            if (Input.GetAxis("Mouse ScrollWheel") < 0)
+                ToggleSlot(false);
+        }
 
       /*  if (Input.GetButtonDown("Submit"))
             UseSelectedItem();*/
