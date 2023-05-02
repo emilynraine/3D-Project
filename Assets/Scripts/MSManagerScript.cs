@@ -75,6 +75,10 @@ public class MSManagerScript : MonoBehaviour
         {
             Cursor.visible = true;
         }
+        else
+        {
+            Cursor.visible = false;
+        }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -162,13 +166,11 @@ public class MSManagerScript : MonoBehaviour
     public void PlayHover(GameObject button)
     {
         button.GetComponentInChildren<Text>().color = _unselectedTan;
-        //button.GetComponentInChildren<Image>().color = _selectedBrown;
         StartCoroutine(Hover());
     }
 
     public void PlayHoverExit(GameObject button)
     {
-       // button.GetComponentInChildren<Image>().color = _unselectedTan;
         button.GetComponentInChildren<Text>().color = _selectedBrown;
     }
 
@@ -214,16 +216,16 @@ public class MSManagerScript : MonoBehaviour
     public void OnControlsButtonClick(GameObject button)
     {
         button.GetComponentInChildren<Text>().color = _selectedBrown;
-       // button.GetComponentInChildren<Image>().color = _unselectedTan;
+
     }
 
     public void OnMenuButtonClick(GameObject button)
     {
         button.GetComponentInChildren<Text>().color = _selectedBrown;
-        //button.GetComponentInChildren<Image>().color = _unselectedTan;
         _pauseCanvas.SetActive(false);
         StartCoroutine(BlackOut(true));
         Invoke("TitleScene", 3f);
+
     }
 
 
