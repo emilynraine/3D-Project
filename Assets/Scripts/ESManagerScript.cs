@@ -11,6 +11,7 @@ public class ESManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Cursor.visible = true;
         StartCoroutine(BlackOut(false));
     }
 

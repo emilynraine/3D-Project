@@ -19,6 +19,8 @@ TagManager:
   - Door
   - FrontBuilding
   - Alley
+  - CutsceneCar
+  - CutsceneCamera
   layers:
   - Default
   - TransparentFX

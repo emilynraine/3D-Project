@@ -30,7 +30,6 @@ public class PlayerLookScript : MonoBehaviour
             verticalAngle -= (Input.GetAxis("Mouse Y") * 4);
             verticalAngle = Mathf.Clamp(verticalAngle, -60, 60);
 
-            //_transform.rotation = Quaternion.Euler(verticalAngle, horizontalAngle, 0);
             _transform.rotation = Quaternion.Euler(0, horizontalAngle, 0);
             _headTransform.localRotation = Quaternion.Euler(verticalAngle, 0, 0);
         }
@@ -44,7 +43,6 @@ public class PlayerLookScript : MonoBehaviour
         } else
         {
             _hit = _emptyHitObject;
-            //print("emptyHit");
         }
 
         if(_hit.gameObject.tag != "Note" && _hit.gameObject.tag != "StoryNote" && _hit.gameObject.tag != "Gun" && _hit.gameObject.tag != "Car" && _hit.gameObject.tag != "Key" && _hit.gameObject.tag != "Door")

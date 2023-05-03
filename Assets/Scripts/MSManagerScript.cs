@@ -31,6 +31,14 @@ public class MSManagerScript : MonoBehaviour
     public NoteScript[] _notes;
     public GameObject[] _spawnPts;
 
+    public Rigidbody _endCar;
+    public bool _notesLeft = true;
+    public bool _won = false;
+    public GameObject _realCamera;
+    public GameObject _cutsceneCamera;
+    public bool _playingDrive = false;
+    public Camera _secondCamera;
+
     public int _lastPos = 0;
     public bool _dead = false;
 
@@ -41,6 +49,11 @@ public class MSManagerScript : MonoBehaviour
     [SerializeField]
     private AudioClip _slotSwitchClip;
 
+    public GameObject _car;
+    public AudioClip _carStart;
+    public AudioClip _carDrive;
+    public bool _playedCar = false;
+
     public bool _spawnInBuilding = false;
     public Button[] _buttons;
     AudioSource _audioSource;
@@ -50,10 +63,13 @@ public class MSManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _cutsceneCamera.SetActive(false);
+        _realCamera.SetActive(true);
         _audioSource = GetComponent<AudioSource>();
         _pauseCanvas.SetActive(false);
         // _controlsCanvas.SetActive(_paused);
-
+        _realCamera.SetActive(true);
+        _cutsceneCamera.SetActive(false);
 
         _playerMove = FindObjectOfType<PlayerMoveScript>();
         _mainCamera = FindObjectOfType<CameraScript>();
@@ -86,6 +102,21 @@ public class MSManagerScript : MonoBehaviour
             Pause();
         }
 
+        // if (Input.GetKeyDown(KeyCode.T))
+        // {
+        //     _won = true;
+        // }
+
+        if(_playedCar)
+        {
+            _car.GetComponent<AudioSource>().volume = _car.GetComponent<AudioSource>().volume - 0.02f;
+        }
+
+        if(_playingDrive)
+        {
+            _endCar.transform.position = new Vector3(_endCar.transform.position.x - .09f, _endCar.transform.position.y, _endCar.transform.position.z);
+            _secondCamera.transform.position = new Vector3(_secondCamera.transform.position.x + .07f, _secondCamera.transform.position.y, _secondCamera.transform.position.z);
+        }
 
         //Blackout and Wake up the player for the story
         if(_storyStart) 
@@ -114,6 +145,17 @@ public class MSManagerScript : MonoBehaviour
             StartCoroutine(BlackOut(true));
             Invoke("LoadEnd", 4f);
         }
+
+        if(_won)
+        {
+            _won = true;
+            if(!_playedCar)
+            {
+                _car.GetComponent<AudioSource>().Play();
+                _playedCar = true;
+            }
+            Invoke("EndCutScene", 3.5f);
+        }
     }
 
 
@@ -133,9 +175,27 @@ public class MSManagerScript : MonoBehaviour
             print("no more notes, oob");
             //Win state goes here?
             print("player has won");
-            Invoke("LoadWin", 2f);
-
+            _pickUp.text = "I should head back to the car at the gas station and leave...";
+            _pickUp.enabled = true;
+            _notesLeft = false;
+            Invoke("StopText", 2f);
         }
+    }
+
+    public void EndCutScene()
+    {
+        _cutsceneCamera.SetActive(true);
+        _realCamera.SetActive(false);
+        _pickUp.enabled = false;
+        _playingDrive = true;
+        StartCoroutine(BlackOut(true, .12f));
+
+        Invoke("LoadWin", 4f);
+    }
+
+    public void StopText()
+    {
+        _pickUp.enabled = false;
     }
 
     public void LoadEnd()

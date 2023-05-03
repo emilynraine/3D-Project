@@ -39,6 +39,11 @@ public class PlayerMoveScript : MonoBehaviour
     bool _slowingBreath = false;
     bool _outOfBreath = false;
 
+    public GameObject _stepRayUpper;
+    public GameObject _stepRayLower;
+    public float _stepHeight = 0.3f;
+    public float _stepSmooth = 0.1f;
+
     PostProcessVolume _volume;
     Vignette _vignette;
 
@@ -54,6 +59,8 @@ public class PlayerMoveScript : MonoBehaviour
         _movement = true;
         _ladder = FindObjectOfType<LadderScript>();
         _manager = FindObjectOfType<MSManagerScript>();
+
+        _stepRayUpper.transform.position = new Vector3(_stepRayUpper.transform.position.x, _stepHeight, _stepRayUpper.transform.position.z);
     }
 
     // Update is called once per frame
@@ -94,7 +101,14 @@ public class PlayerMoveScript : MonoBehaviour
 
             //SPRINT =====
             //Check to see if the player has run out of sprint or has regained it
-            if(_timeSprinting > 5 || _outOfBreath)
+            if(_timeSprinting > 10)
+            {
+                _outOfBreath = false;
+                _timeSprinting = 0;
+                _playTired = false;
+                _mouth.Stop();
+            }
+            else if(_timeSprinting > 5 || _outOfBreath)
             {
                 _outOfBreath = true;
                 if(!_playTired)
@@ -105,13 +119,6 @@ public class PlayerMoveScript : MonoBehaviour
                     _playTired = true;
                 }
                 _timeSprinting += Time.deltaTime;
-            }
-            if(_timeSprinting > 10)
-            {
-                _outOfBreath = false;
-                _timeSprinting = 0;
-                _playTired = false;
-                _mouth.Stop();
             }
 
             //Check to see if the player is trying to sprint
@@ -159,9 +166,14 @@ public class PlayerMoveScript : MonoBehaviour
             }
             else
             {
+                if(!Input.GetKey(KeyCode.LeftShift) && _timeSprinting > 0 && !_outOfBreath)
+                {
+                    _timeSprinting -= Time.deltaTime;
+                }
                 _scale = 4;
                 _timeBetweenSteps = .72f;
             }
+            print(_timeSprinting);
             //SPRINT =====
 
             //Movement
@@ -170,7 +182,7 @@ public class PlayerMoveScript : MonoBehaviour
             _moving = true;
             if(Input.GetAxis("Horizontal") < .1f && Input.GetAxis("Vertical") < .1f)
             {
-                _rbody.velocity = new Vector3(0, _rbody.velocity.y, 0);;
+                _rbody.velocity = new Vector3(0, _rbody.velocity.y, 0);
                 _moving = false;
             } 
             else

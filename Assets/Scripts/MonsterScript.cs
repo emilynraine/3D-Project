@@ -6,6 +6,8 @@ using UnityEngine.AI;
 public class MonsterScript : MonoBehaviour
 {
     AudioSource _audioSource;
+    public AudioClip _fleeSound;
+    public bool _playingMonster = false;
     public Animator _animator;
     Rigidbody _rbody;
     public GameObject _playerObject;
@@ -257,6 +259,7 @@ public class MonsterScript : MonoBehaviour
 
     public IEnumerator PlayScreech()
     {
+        _audioSource.clip = _fleeSound;
         _audioSource.Play();
         yield return new WaitForSeconds(_audioSource.clip.length);
     }
