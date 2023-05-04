@@ -7,7 +7,7 @@ using System;
 
 public class MSManagerScript : MonoBehaviour
 {
-    public static bool _paused = false;
+    public bool _paused = false;
     public GameObject _pauseCanvas;
     public GameObject _inventoryCanvas;
 
@@ -46,8 +46,6 @@ public class MSManagerScript : MonoBehaviour
     private AudioClip _roarClip;
     [SerializeField]
     private AudioClip _loopClip;
-    [SerializeField]
-    private AudioClip _slotSwitchClip;
 
     public GameObject _car;
     public AudioClip _carStart;
@@ -223,23 +221,8 @@ public class MSManagerScript : MonoBehaviour
         yield return new WaitForSeconds(_audioSource.clip.length);
     }
 
-    public void PlayHover(GameObject button)
-    {
-        button.GetComponentInChildren<Text>().color = _unselectedTan;
-        StartCoroutine(Hover());
-    }
 
-    public void PlayHoverExit(GameObject button)
-    {
-        button.GetComponentInChildren<Text>().color = _selectedBrown;
-    }
 
-    public IEnumerator Hover()
-    {
-        _audioSource.clip = _slotSwitchClip;
-        _audioSource.Play();
-        yield return new WaitForSeconds(_audioSource.clip.length);
-    }
 
     void Pause()
     {
@@ -266,10 +249,11 @@ public class MSManagerScript : MonoBehaviour
     public void OnRestartButtonClick(GameObject button)
     {
         button.GetComponentInChildren<Text>().color = _selectedBrown;
-       // button.GetComponentInChildren<Image>().color = _unselectedTan;
+        // button.GetComponentInChildren<Image>().color = _unselectedTan;
         _pauseCanvas.SetActive(false);
         print("Restart");
         StartCoroutine(BlackOut(true));
+        _paused = false;
         Invoke("MainScene", 3f);
     }
 
@@ -284,6 +268,7 @@ public class MSManagerScript : MonoBehaviour
         button.GetComponentInChildren<Text>().color = _selectedBrown;
         _pauseCanvas.SetActive(false);
         StartCoroutine(BlackOut(true));
+        _paused = false;
         Invoke("TitleScene", 3f);
 
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerLookScript : MonoBehaviour
+public class PlayerLookScript : PauseScript
 {
     public GameObject _hit;
     Transform _transform;
@@ -21,10 +21,9 @@ public class PlayerLookScript : MonoBehaviour
         _transform = transform;
     }
 
-    // Update is called once per frame
-    void Update()
+    override protected void SkipWhilePaused()
     {
-        if(_player._movement)
+        if (_player._movement)
         {
             float horizontalAngle = _transform.eulerAngles.y + (Input.GetAxis("Mouse X") * 4);
             verticalAngle -= (Input.GetAxis("Mouse Y") * 4);
@@ -37,18 +36,24 @@ public class PlayerLookScript : MonoBehaviour
         //Look Ray
         var ray = _mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 4)) 
+        if (Physics.Raycast(ray, out hit, 4))
         {
             _hit = hit.transform.gameObject;
-        } else
+        }
+        else
         {
             _hit = _emptyHitObject;
         }
 
-        if(_hit.gameObject.tag != "Note" && _hit.gameObject.tag != "StoryNote" && _hit.gameObject.tag != "Gun" && _hit.gameObject.tag != "Car" && _hit.gameObject.tag != "Key" && _hit.gameObject.tag != "Door")
+        if (_hit.gameObject.tag != "Note" && _hit.gameObject.tag != "StoryNote" && _hit.gameObject.tag != "Gun" && _hit.gameObject.tag != "Car" && _hit.gameObject.tag != "Key" && _hit.gameObject.tag != "Door")
         {
             _pickupText.enabled = false;
-        } 
-
+        }
     }
+        // Update is called once per frame
+      /*  void Update()
+    {
+       
+
+    }*/
 }

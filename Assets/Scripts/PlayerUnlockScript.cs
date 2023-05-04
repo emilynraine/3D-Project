@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerUnlockScript : MonoBehaviour
+public class PlayerUnlockScript : PauseScript
 {
     AudioSource _playerSource;
     public AudioClip _keyPickUp;
@@ -21,7 +21,7 @@ public class PlayerUnlockScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+        override protected void SkipWhilePaused()
     {
         //print("key inventory index: " + _keyInventoryIndex);
         //print("curr selected: " + _inventory.getCurrSelected());

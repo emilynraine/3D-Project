@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
-public class PlayerMoveScript : MonoBehaviour
+public class PlayerMoveScript : PauseScript
 {
     public Rigidbody _rbody;
     Transform _transform;
@@ -19,7 +19,8 @@ public class PlayerMoveScript : MonoBehaviour
     public float _zMin = 12f;
     public float _zMax = 36f;
 
-    MSManagerScript _manager;
+    //MSManagerScript _manager;
+    //fPauseScript _pauseManager;
     AudioSource _playerSource;
     public AudioClip _footstepSound;
     public AudioClip _tenseSound1;
@@ -58,15 +59,17 @@ public class PlayerMoveScript : MonoBehaviour
         _playerSource = GetComponent<AudioSource>();
         _movement = true;
         _ladder = FindObjectOfType<LadderScript>();
-        _manager = FindObjectOfType<MSManagerScript>();
+        //_manager = FindObjectOfType<MSManagerScript>();
+       // _pauseManager = FindObjectOfType<PauseScript>();
 
         _stepRayUpper.transform.position = new Vector3(_stepRayUpper.transform.position.x, _stepHeight, _stepRayUpper.transform.position.z);
     }
 
     // Update is called once per frame
-    void Update()
-    {    
-        if(_movement && !_climbingLadder)
+    override protected void SkipWhilePaused()
+    {
+
+        if (_movement && !_climbingLadder)
         {
             //Timing for footsteps
             _timeSinceFoot = _timeSinceFoot + Time.deltaTime;

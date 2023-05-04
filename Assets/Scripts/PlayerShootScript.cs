@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerShootScript : MonoBehaviour
+public class PlayerShootScript : PauseScript
 {
     public Animator _animator;
     public GameObject _gun;
@@ -32,8 +32,7 @@ public class PlayerShootScript : MonoBehaviour
         _inventory = GetComponent<Invantory>();
     }
 
-    // Update is called once per frame
-    void Update()
+    override protected void SkipWhilePaused()
     {
         //print("gun inventory index: " + _gunInventoryIndex);
         //print("curr selected: " + _inventory.getCurrSelected());

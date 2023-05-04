@@ -1,18 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
-public class MonsterScript : MonoBehaviour
+public class MonsterScript : PauseScript
 {
-    AudioSource _audioSource;
+    AudioSource _mAudioSource;
     public AudioClip _fleeSound;
     public bool _playingMonster = false;
     public Animator _animator;
     Rigidbody _rbody;
     public GameObject _playerObject;
     PlayerShootScript _player;
-    MSManagerScript _manager;
+    //MSManagerScript _manager;
+    //PauseScript _pauseManager;
     Transform _transform;
     public bool _monsterActive = false;
     public bool _followingPlayer = false;
@@ -47,14 +50,15 @@ public class MonsterScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _audioSource = GetComponent<AudioSource>();
+        _mAudioSource = GetComponent<AudioSource>();
         _transform = transform;
         _animator = GetComponent<Animator>();
         _rbody = GetComponent<Rigidbody>();
         _frontS = FindObjectOfType<FrontBuildingScript>();
         _alleyS = FindObjectOfType<AlleyScript>();
         _player = FindObjectOfType<PlayerShootScript>();
-        _manager = FindObjectOfType<MSManagerScript>();
+        //_manager = FindObjectOfType<MSManagerScript>();
+        //_pauseManager = FindObjectOfType<PauseScript>();
         _playerObject = GameObject.FindWithTag("Player");
         _frontBuilding = GameObject.FindWithTag("FrontBuilding");
         _alley = GameObject.FindWithTag("Alley");
@@ -66,23 +70,29 @@ public class MonsterScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+   /* void Update()
     {
+        
+    }*/
+    override protected void SkipWhilePaused()
+    {
+        print("in monster skip while paused\n");
+
         _curPosition = _transform.position;
         _animator.SetBool("Idle", _rbody.velocity.x == 0.0f && _rbody.velocity.z == 0.0f && !_player._hitCRPlaying);
         _animator.SetBool("Forward", (_rbody.velocity.x > 0.0f || _rbody.velocity.z > 0.0f) && !_player._hitCRPlaying);
-        
-        if(_manager._storyStart)
+
+        if (_manager._storyStart)
         {
             _monsterActive = true;
         }
 
-        if(_monsterActive)
+        if (_monsterActive)
         {
-            if(_gotShot || _fleeing) //Make him flee from the player to another location
+            if (_gotShot || _fleeing) //Make him flee from the player to another location
             {
-                if(_gotShot)
-                {   
+                if (_gotShot)
+                {
                     _gotShot = false;
                     _directionToPlayer = _transform.position - _playerObject.transform.position;
                     _fleePosition = _transform.position + _directionToPlayer;
@@ -91,12 +101,12 @@ public class MonsterScript : MonoBehaviour
                 }
 
                 float distance = Vector3.Distance(_transform.position, _fleePosition);
-                if(distance < 2f)
+                if (distance < 2f)
                 {
                     _fleeing = false;
                 }
             }
-            else if(_followingPlayer) // Make him follow the player's position directly
+            else if (_followingPlayer) // Make him follow the player's position directly
             {
                 _agent.SetDestination(_playerObject.transform.position);
                 //print("Following Player to: " + _agent.destination);
@@ -107,64 +117,64 @@ public class MonsterScript : MonoBehaviour
                 _inAlley = false;
                 _handleBuilding = true;
             }
-            else if(_alleyS._playerEnterAlley || _frontS._playerEnter)
+            else if (_alleyS._playerEnterAlley || _frontS._playerEnter)
             {
-                if(!_handleAlley)
+                if (!_handleAlley)
                 {
                     _frontS._playerEnter = false;
                     _arrived = false;
                     _handleAlley = true;
                 }
-                if(!_handleBuilding)
+                if (!_handleBuilding)
                 {
                     _alleyS._playerEnterAlley = false;
                     _inAlley = false;
                     _handleBuilding = true;
                 }
-                if(_alleyS._playerEnterAlley) // Make him go check the alleys
+                if (_alleyS._playerEnterAlley) // Make him go check the alleys
                 {
                     //print("ALLEY");
-                    if(!_inAlley)
+                    if (!_inAlley)
                     {
                         _agent.SetDestination(_alley.transform.position);
                         float distance = Vector3.Distance(_transform.position, _alley.transform.position);
-                        if(distance < 2f)
+                        if (distance < 2f)
                         {
                             _inAlley = true;
                             _time = 0;
                         }
-                    } 
+                    }
                     else
                     {
                         _time += Time.deltaTime;
                     }
-                    if(_time > 3f)
+                    if (_time > 3f)
                     {
                         _time = 0;
                         _alleyS._playerEnterAlley = false;
                         _inAlley = false;
-                       // print("DONE WITH ALLEY");
+                        // print("DONE WITH ALLEY");
                     }
                 }
 
-                if(_frontS._playerEnter) //Make him go check the front of the building
+                if (_frontS._playerEnter) //Make him go check the front of the building
                 {
-                   // print("IN BUILDING");
-                    if(!_arrived)
+                    // print("IN BUILDING");
+                    if (!_arrived)
                     {
                         _agent.SetDestination(_frontBuilding.transform.position);
                         float distance = Vector3.Distance(_transform.position, _frontBuilding.transform.position);
-                        if(distance < 2f)
+                        if (distance < 2f)
                         {
                             _arrived = true;
                             _time = 0;
                         }
-                    } 
+                    }
                     else
                     {
                         _time += Time.deltaTime;
                     }
-                    if(_time > 3f)
+                    if (_time > 3f)
                     {
                         _time = 0;
                         _frontS._playerEnter = false;
@@ -177,13 +187,13 @@ public class MonsterScript : MonoBehaviour
             {
                 _agent.SetDestination(_waypoints[_currentMovePoint].transform.position);
                 float dtp = Vector3.Distance(_transform.position, _waypoints[_currentMovePoint].transform.position);
-                if(dtp < 1f)
+                if (dtp < 1f)
                 {
                     //Prevent Same Point generating twice
-                    int newPoint = Random.Range(0,4);
-                    while(newPoint == _currentMovePoint)
+                    int newPoint = Random.Range(0, 4);
+                    while (newPoint == _currentMovePoint)
                     {
-                        newPoint = Random.Range(0,4);
+                        newPoint = Random.Range(0, 4);
                     }
                     _currentMovePoint = newPoint;
 
@@ -193,12 +203,12 @@ public class MonsterScript : MonoBehaviour
 
             _positionTimeCheck += Time.deltaTime;
             //print("FROZEN for: " + _freezeTime);
-            if(_positionTimeCheck > 1)
+            if (_positionTimeCheck > 1)
             {
                 float dtp = Vector3.Distance(_lastPosition, _curPosition);
                 _positionTimeCheck = 0;
                 _lastPosition = _curPosition;
-                if(dtp < 0.25f)
+                if (dtp < 0.25f)
                 {
                     _freezeTime += 1;
                 }
@@ -208,7 +218,7 @@ public class MonsterScript : MonoBehaviour
                 }
             }
 
-            if(_freezeTime > 4.0f)
+            if (_freezeTime > 4.0f)
             {
                 _agent.enabled = false;
                 _agent.enabled = true;
@@ -218,9 +228,8 @@ public class MonsterScript : MonoBehaviour
             }
         }
     }
-
-    //Player following circle
-    void OnTriggerEnter(Collider other) 
+        //Player following circle
+        void OnTriggerEnter(Collider other) 
     {
         if(other.gameObject.tag == "Player")
         {
@@ -259,9 +268,9 @@ public class MonsterScript : MonoBehaviour
 
     public IEnumerator PlayScreech()
     {
-        _audioSource.clip = _fleeSound;
-        _audioSource.Play();
-        yield return new WaitForSeconds(_audioSource.clip.length);
+        _mAudioSource.clip = _fleeSound;
+        _mAudioSource.Play();
+        yield return new WaitForSeconds(_mAudioSource.clip.length);
     }
    public IEnumerator HitAnim()
     {

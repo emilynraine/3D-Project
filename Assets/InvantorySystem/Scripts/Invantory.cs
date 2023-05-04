@@ -25,6 +25,7 @@ public class Invantory : MonoBehaviour {
 
     public AudioSource _audioSource;
     public AudioClip _slotSwitchClip;
+    public MSManagerScript _manager;
     [Tooltip("Resets the entire invantory system to have 0 items picked up. This is useful for testing in editor and for restarting each game")]
     public bool resetInvantoryOnStart = true;
     private List<InvantoryObject> objectsInInvantory;
@@ -39,6 +40,7 @@ public class Invantory : MonoBehaviour {
 
     void Start()
     {
+        _manager = FindObjectOfType<MSManagerScript>();
         _audioSource = GetComponent<AudioSource>();
         objectsInInvantory = new List<InvantoryObject>();
         invantorySlots = new List<GameObject>();
@@ -64,7 +66,7 @@ public class Invantory : MonoBehaviour {
     // Update the input logic here to change how the the slots get toggled and the selected item is used.
     void Update()
     {
-        if (!MSManagerScript._paused)
+        if (!_manager._paused)
         {
             // Cycle through the in
             if (Input.GetAxis("Mouse ScrollWheel") > 0)
