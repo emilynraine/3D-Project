@@ -9,6 +9,8 @@ public class MSManagerScript : MonoBehaviour
 {
     public bool _paused = false;
     public GameObject _pauseCanvas;
+    public GameObject _controlsPanel;
+    public GameObject _mainPanel;
     public GameObject _inventoryCanvas;
 
     Color _selectedBrown = new Color(81/255f, 56/255f, 23/255f, 255/255f);
@@ -65,7 +67,7 @@ public class MSManagerScript : MonoBehaviour
         _realCamera.SetActive(true);
         _audioSource = GetComponent<AudioSource>();
         _pauseCanvas.SetActive(false);
-        // _controlsCanvas.SetActive(_paused);
+        _controlsPanel.SetActive(false);
         _realCamera.SetActive(true);
         _cutsceneCamera.SetActive(false);
 
@@ -260,16 +262,24 @@ public class MSManagerScript : MonoBehaviour
     public void OnControlsButtonClick(GameObject button)
     {
         button.GetComponentInChildren<Text>().color = _selectedBrown;
+        _mainPanel.SetActive(false);
+        _controlsPanel.SetActive(true);
 
+    }
+
+    public void OnBackButtonClick(GameObject button)
+    {
+        _mainPanel.SetActive(true);
+        _controlsPanel.SetActive(false);
     }
 
     public void OnMenuButtonClick(GameObject button)
     {
         button.GetComponentInChildren<Text>().color = _selectedBrown;
         _pauseCanvas.SetActive(false);
-        StartCoroutine(BlackOut(true));
-        _paused = false;
+        StartCoroutine(BlackOut(true)); 
         Invoke("TitleScene", 3f);
+        _paused = false;
 
     }
 
