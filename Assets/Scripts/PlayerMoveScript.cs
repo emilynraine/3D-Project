@@ -202,13 +202,13 @@ public class PlayerMoveScript : PauseScript
 
         if (_ladder._charIsThere && Input.GetKey(KeyCode.W)){
            _climbingLadder = true;
-           _rbody.velocity = new Vector3(1, 3, 0);
+           _rbody.velocity = new Vector3(0, 3, 0);
             
         }
         else if (_ladder._charIsThere && Input.GetKey(KeyCode.S))
         {
             _climbingLadder = true;
-            _rbody.velocity = new Vector3(1, -3, 0);
+            _rbody.velocity = new Vector3(0, -3, 0);
         }
         else
         {
