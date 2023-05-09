@@ -22,12 +22,12 @@ public class CarScript : MonoBehaviour
             _player._pickupText.text = "The car is locked...";
             _player._pickupText.enabled = true;
         }
-        else if (_player._hit.tag == "Car" && !_manager._notesLeft) 
+        else if (_player._hit.tag == "Car" && !_manager._notesLeft && !_manager._playingDrive) 
         {
             _player._pickupText.text = "Press 'E' to start car";
             _player._pickupText.enabled = true;
         }
-        else if (_player._hit.tag != "Door")
+        else if (_player._hit.tag != "Door" && _manager._notesLeft)
         {
             _player._pickupText.text = "Press 'E' to pick up";
         }

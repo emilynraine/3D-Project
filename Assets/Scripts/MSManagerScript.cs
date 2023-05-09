@@ -28,6 +28,7 @@ public class MSManagerScript : MonoBehaviour
 
     public CameraScript _mainCamera;
     public PlayerMoveScript _playerMove;
+    public PlayerLookScript _playerLook;
 
     public List<NoteScript> _sortedNotes;
     public NoteScript[] _notes;
@@ -102,10 +103,10 @@ public class MSManagerScript : MonoBehaviour
             Pause();
         }
 
-        // if (Input.GetKeyDown(KeyCode.T))
-        // {
-        //     _won = true;
-        // }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            _won = true;
+        }
 
         if(_playedCar)
         {
@@ -156,6 +157,15 @@ public class MSManagerScript : MonoBehaviour
             }
             Invoke("EndCutScene", 3.5f);
         }
+
+        if(!_notesLeft && !_playingDrive)
+        {
+            if(_playerLook._hit.gameObject.tag != "Car")
+            {
+                _pickUp.text = "I should head back to the car at the gas station and leave...";
+            }
+            _pickUp.enabled = true;
+        }
     }
 
 
@@ -178,7 +188,6 @@ public class MSManagerScript : MonoBehaviour
             _pickUp.text = "I should head back to the car at the gas station and leave...";
             _pickUp.enabled = true;
             _notesLeft = false;
-            Invoke("StopText", 2f);
         }
     }
 
