@@ -45,6 +45,8 @@ public class PlayerMoveScript : PauseScript
     public float _stepHeight = 0.3f;
     public float _stepSmooth = 0.1f;
 
+    bool _touchingStair = false;
+
     PostProcessVolume _volume;
     Vignette _vignette;
 
@@ -185,7 +187,15 @@ public class PlayerMoveScript : PauseScript
             _moving = true;
             if(Input.GetAxis("Horizontal") < .1f && Input.GetAxis("Vertical") < .1f)
             {
-                _rbody.velocity = new Vector3(0, _rbody.velocity.y, 0);
+                if(_touchingStair)
+                {
+                    print("HERE");
+                    _rbody.velocity = new Vector3(0, 0, 0);
+                }
+                else
+                {
+                    _rbody.velocity = new Vector3(0, _rbody.velocity.y, 0);
+                }
                 _moving = false;
             } 
             else
@@ -224,6 +234,18 @@ public class PlayerMoveScript : PauseScript
             _movement = false;
             KnockBack();
             PlayTense1();
+        }
+        else if(other.gameObject.tag == "Stair")
+        {
+            _touchingStair = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision other) 
+    {
+        if(other.gameObject.tag == "Stair")
+        {
+            _touchingStair = false;
         }
     }
 

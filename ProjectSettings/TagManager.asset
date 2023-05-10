@@ -21,6 +21,7 @@ TagManager:
   - Alley
   - CutsceneCar
   - CutsceneCamera
+  - Stair
   layers:
   - Default
   - TransparentFX
