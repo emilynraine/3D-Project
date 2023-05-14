@@ -33,7 +33,7 @@ public class InvantoryItemLogic
         switch (logicType)
         {
             case LogicType.Spawn:
-                Object.Instantiate(invantoryObject.objectPrefab, tf.position + (tf.forward * 2), Quaternion.identity);
+                //Object.Instantiate(invantoryObject.objectPrefab, tf.position + (tf.forward * 2), Quaternion.identity);
                 break;
             case LogicType.Other:
                 invantoryObject.objectPrefab.GetComponent<RuntimeInvantoryLogic>().Use(tf.gameObject);

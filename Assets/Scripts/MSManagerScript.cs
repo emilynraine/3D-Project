@@ -13,14 +13,15 @@ public class MSManagerScript : MonoBehaviour
     public GameObject _mainPanel;
     public GameObject _inventoryCanvas;
 
-    Color _selectedBrown = new Color(81/255f, 56/255f, 23/255f, 255/255f);
-    Color _unselectedTan = new Color(232/255f, 213/255f, 183/255f, 255/255f);
+    Color _selectedBrown = new Color(81 / 255f, 56 / 255f, 23 / 255f, 255 / 255f);
+    Color _unselectedTan = new Color(232 / 255f, 213 / 255f, 183 / 255f, 255 / 255f);
     // public GameObject _controlsCanvas;
 
 
     public string[] _messages = {"I sense something following me. If you find this, it may already have taken me.\nWill grab gun and take cover on fire dept. roof.", "Seems safe for the time being. Will stay here with gun...\nwait, I just heard something. I'm afraid th",
         "1/4\nThere's a reason this city is so empty.", "2/4 \nAlways just out of sight.", "3/4 \nYou're not special. You won't escape the fate of the others.", "4/4 \nWhat a shame, you would have made an excellent meal..."};
     public int _noteNum = 0;
+    public int _gunNum = 0;
     public GameObject _blackoutSquare;
     public bool _storyStart = false;
     float _timeSinceBlackout = 0;
@@ -32,6 +33,7 @@ public class MSManagerScript : MonoBehaviour
 
     public List<NoteScript> _sortedNotes;
     public NoteScript[] _notes;
+    public GameObject[] _guns;
     public GameObject[] _spawnPts;
 
     public Rigidbody _endCar;
@@ -75,7 +77,8 @@ public class MSManagerScript : MonoBehaviour
         _playerMove = FindObjectOfType<PlayerMoveScript>();
         _mainCamera = FindObjectOfType<CameraScript>();
         _notes = FindObjectsOfType<NoteScript>(true);
-        
+        _guns = GameObject.FindGameObjectsWithTag("Gun");
+
         StartCoroutine(PlaySounds(_roarClip, _loopClip));
         
         Array.Sort(_notes, new NoteComparer());
@@ -188,6 +191,22 @@ public class MSManagerScript : MonoBehaviour
             _pickUp.text = "I should head back to the car at the gas station and leave...";
             _pickUp.enabled = true;
             _notesLeft = false;
+        }
+    }
+
+    public void SetNextGunActive()
+    {
+        if (_gunNum + 1 < _guns.Length)
+        {
+            _gunNum++;
+            print("now on gun: " + _gunNum);
+            _guns[_gunNum].gameObject.SetActive(true);
+
+            print("set gun " + _gunNum + " active");
+        }
+        else
+        {
+            print("no more guns, oob");
         }
     }
 

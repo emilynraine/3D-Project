@@ -77,7 +77,9 @@ public class PlayerShootScript : PauseScript
                 StartCoroutine(_monster.PlayScreech());
 
             }
-            //_gun.SetActive(false);
+            _inventory.UseSelectedItem();
+            _manager.SetNextGunActive();
+
         }
 
     }
@@ -97,7 +99,12 @@ public class PlayerShootScript : PauseScript
             _gunTransform.localPosition = new Vector3(_gunTransform.localPosition.x, _gunTransform.localPosition.y, 
             _gunTransform.localPosition.z + i);
             yield return null;
+
+
         }
+        _gunInventoryIndex = -1;
+        // yield return new WaitForSeconds(.0f);
+        // _gun.SetActive(false);
     }
 
     /*IEnumerator HitAnim()

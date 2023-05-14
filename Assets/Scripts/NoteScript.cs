@@ -114,9 +114,10 @@ public class NoteScript : MonoBehaviour
                     _messageText2.text = "";
                     PlayNote();
                     _inNote = false;
-                    
+                    _noteImage.enabled = false;
 
-                    if(_player._hit.tag == "StoryNote") 
+
+                    if (_player._hit.tag == "StoryNote") 
                     {
                         _manager._storyStart = true;
                         _noteImage.enabled = false;
