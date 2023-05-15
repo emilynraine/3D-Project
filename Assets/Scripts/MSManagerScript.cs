@@ -27,6 +27,7 @@ public class MSManagerScript : MonoBehaviour
     public bool _storyStart = false;
     float _timeSinceBlackout = 0;
     public Text _pickUp;
+    public Text _carText;
 
     public CameraScript _mainCamera;
     public PlayerMoveScript _playerMove;
@@ -86,6 +87,7 @@ public class MSManagerScript : MonoBehaviour
         StartCoroutine(BlackOut(false));
 
         Cursor.visible = false;
+        _carText.enabled = false;
     }
 
     // Update is called once per frame
@@ -164,11 +166,11 @@ public class MSManagerScript : MonoBehaviour
 
         if(!_notesLeft && !_playingDrive)
         {
-            if(_playerLook._hit.gameObject.tag != "Car")
-            {
-                _pickUp.text = "I should head back to the car at the gas station and leave...";
-            }
-            _pickUp.enabled = true;
+            _carText.enabled = true;
+        }
+        else
+        {
+            _carText.enabled = false;
         }
     }
 
