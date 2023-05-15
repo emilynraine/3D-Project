@@ -20,6 +20,10 @@ public class PauseScript : MonoBehaviour
             SkipWhilePaused();
             Time.timeScale = 1f;
         }
+        else if (_manager._isTransitioning)
+        {
+            Time.timeScale = 0f;
+        }
         else
         {
             Time.timeScale = 0f;

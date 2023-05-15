@@ -19,7 +19,7 @@ public class PlayerMoveScript : PauseScript
     public float _zMin = 12f;
     public float _zMax = 36f;
 
-    //MSManagerScript _manager;
+    MSManagerScript _moveManager;
     //fPauseScript _pauseManager;
     AudioSource _playerSource;
     public AudioClip _footstepSound;
@@ -61,7 +61,7 @@ public class PlayerMoveScript : PauseScript
         _playerSource = GetComponent<AudioSource>();
         _movement = true;
         _ladder = FindObjectOfType<LadderScript>();
-        //_manager = FindObjectOfType<MSManagerScript>();
+        _moveManager = FindObjectOfType<MSManagerScript>();
        // _pauseManager = FindObjectOfType<PauseScript>();
 
         _stepRayUpper.transform.position = new Vector3(_stepRayUpper.transform.position.x, _stepHeight, _stepRayUpper.transform.position.z);
@@ -71,7 +71,7 @@ public class PlayerMoveScript : PauseScript
     override protected void SkipWhilePaused()
     {
 
-        if (_movement && !_climbingLadder)
+        if (_movement && !_climbingLadder && !_moveManager._isTransitioning)
         {
             //Timing for footsteps
             _timeSinceFoot = _timeSinceFoot + Time.deltaTime;

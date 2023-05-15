@@ -8,6 +8,7 @@ using System;
 public class MSManagerScript : MonoBehaviour
 {
     public bool _paused = false;
+    public bool _isTransitioning = false;
     public GameObject _pauseCanvas;
     public GameObject _controlsPanel;
     public GameObject _mainPanel;
@@ -123,7 +124,7 @@ public class MSManagerScript : MonoBehaviour
         }
 
         //Blackout and Wake up the player for the story
-        if(_storyStart) 
+        if(_storyStart && !_isTransitioning) 
         {
             _playerMove._xMin = -330f;
             _playerMove._xMax = -203f;
@@ -281,6 +282,7 @@ public class MSManagerScript : MonoBehaviour
         button.GetComponentInChildren<Text>().color = _selectedBrown;
         // button.GetComponentInChildren<Image>().color = _unselectedTan;
         _pauseCanvas.SetActive(false);
+        _isTransitioning = true;
         print("Restart");
         StartCoroutine(BlackOut(true));
         _paused = false;
@@ -305,7 +307,9 @@ public class MSManagerScript : MonoBehaviour
     {
         button.GetComponentInChildren<Text>().color = _selectedBrown;
         _pauseCanvas.SetActive(false);
-        StartCoroutine(BlackOut(true)); 
+        _isTransitioning = true;
+        StartCoroutine(BlackOut(true));
+        Time.timeScale = 0f;
         Invoke("TitleScene", 3f);
         _paused = false;
 
@@ -352,6 +356,7 @@ public class MSManagerScript : MonoBehaviour
                 yield return null;
             }
         }
+        _isTransitioning = false;
     }
 
 }

@@ -14,16 +14,19 @@ public class PlayerLookScript : PauseScript
     public Text _pickupText;
     public Camera _mainCamera;
     public GameObject _emptyHitObject;
+    public MSManagerScript _managerLook;
     // Start is called before the first frame update
     void Start()
     {
         _player = FindObjectOfType<PlayerMoveScript>();
         _transform = transform;
+        _managerLook = FindObjectOfType<MSManagerScript>();
+
     }
 
     override protected void SkipWhilePaused()
     {
-        if (_player._movement)
+        if (_player._movement && !_managerLook._isTransitioning)
         {
             float horizontalAngle = _transform.eulerAngles.y + (Input.GetAxis("Mouse X") * 4);
             verticalAngle -= (Input.GetAxis("Mouse Y") * 4);
